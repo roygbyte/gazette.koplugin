@@ -4,6 +4,8 @@ local socket = require("socket")
 local ltn12 = require("ltn12")
 local logger = require("logger")
 
+local ResponseFactory = require("libs/http/responsefactory")
+
 local DEFAULT_TIMEOUT = 30
 local DEFAULT_MAXTIME = 30
 local DEFAULT_REDIRECTS = 5
@@ -45,7 +47,7 @@ function Request:send()
     }))
     local content = table.concat(self.sink)
     socketutil:reset_timeout()
-    return code, headers, status, content
+    return ResponseFactory:make(code, headers, status, content)
 end
 
 return Request

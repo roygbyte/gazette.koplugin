@@ -60,7 +60,7 @@ end
 
 function Response:hasHeaders()
     if self.headers == nil or
-        not self.headers["content-length"]
+        not self.headers["content-type"]
     then
         return false
     else
