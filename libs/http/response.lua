@@ -22,6 +22,12 @@ function Response:new(o)
         o.code = 404
     end
 
+    if o:isXml() and
+        o:hasContent()
+    then
+        o.content = o:decodeXml(o.content)
+    end
+
     return o
 end
 
@@ -68,6 +74,16 @@ function Response:hasHeaders()
     end
 end
 
+function Response:hasContent()
+    if self.content == nil and
+        tonumber(self.headers["content-length"]) == #self.content
+    then
+        return false
+    else
+        return true
+    end
+end
+
 function Response:isHostUnknown()
     if self.code == "host or service not provided, or not known"
     then
@@ -77,11 +93,34 @@ function Response:isHostUnknown()
     end
 end
 
+function Response:isXml()
+    if self:hasHeaders() and
+        self.headers["content-type"] == "application/xml"
+    then
+        return true
+    else
+        return false
+    end
+end
 
 function Response:setUrlFromHeaders()
     local url = self.headers.location
     local parsed_url = socket_url.parse(url)
     self.url = socet_url.build(parsed_url)
+end
+
+function Response:decodeXml(xml_to_decode)
+    local xml2lua = require("libs/xml2lua/xml2lua")
+    local handler = require("libs/xml2lua/xmlhandler.tree")
+    local parser = xml2lua.parser(handler)
+
+    local ok, error_message = pcall(function()
+            parser:parse(xml_to_decode)
+    end)
+    if not ok then
+        return nil
+    end
+    return handler.root
 end
 
 return Response

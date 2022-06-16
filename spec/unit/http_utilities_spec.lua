@@ -3,7 +3,6 @@ describe("HTTP Utilities", function()
               orig_path = package.path
               package.path = "plugins/gazette.koplugin/?.lua;" .. package.path
               require("commonrequire")
-
       end)
       describe("Request", function()
               it("should use default config values if RequestFactory passes empty config", function()
@@ -15,6 +14,17 @@ describe("HTTP Utilities", function()
                       assert.are.same(Request.default.maxtime, request.maxtime)
                       assert.are.same(Request.default.timeout, request.timeout)
                       assert.are.same(Request.default.redirects, request.redirects)
+              end)
+              it("should be different than the request just made", function()
+                      local RequestFactory = require("libs/http/requestfactory")
+                      local Request = require("libs/http/request")
+                      local different_config = {
+                          maxtime = 60,
+                          timeout = 20
+                      }
+                      local request = RequestFactory:makeGetRequest("https://koreader.rocks", different_config)
+                      assert.are.same(60, request.maxtime)
+                      assert.are.same(20, request.timeout)
               end)
       end)
       describe("Response", function()
@@ -44,6 +54,15 @@ describe("HTTP Utilities", function()
                       local request = RequestFactory:makeGetRequest("https://scarlettmcallister.com/test_redirect.php", {})
                       local response = request:send()
                       assert.are.same("https://koreader.rocks", response.url)
+              end)
+              it("should decode XML documents", function()
+                      local RequestFactory = require("libs/http/requestfactory")
+
+                      local request = RequestFactory:makeGetRequest("https://scarlettmcallister.com/rss.xml", {})
+                      local response = request:send()
+                      assert.are.same(true, response:canBeConsumed())
+                      assert.are.same(true, response:hasContent())
+                      assert.are.same("table", type(response.content))
               end)
       end)
 end)
