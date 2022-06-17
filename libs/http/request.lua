@@ -39,6 +39,7 @@ function Request:new(o)
 end
 
 function Request:send()
+    self.sink = {}
     socketutil:set_timeout(self.timeout, self.maxtime)
     local code, headers, status = socket.skip(1, http.request({
                 url = self.url,
