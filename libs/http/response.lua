@@ -78,6 +78,7 @@ end
 
 function Response:hasContent()
     if self.content == nil or
+        type(self.content) == "string" and
         tonumber(self.headers["content-length"]) ~= #self.content
     then
         return false
