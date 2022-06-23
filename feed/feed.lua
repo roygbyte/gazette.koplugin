@@ -1,6 +1,6 @@
 local RequestFactory = require("libs/http/requestfactory")
 local ResponseFactory = require("libs/http/responsefactory")
-local GazetteMessages = require("gazettemessages")
+local FeedError = require("feed/feederror")
 
 local Feed = {
     url = "",
@@ -45,12 +45,10 @@ function Feed:fetch()
         response:isXml()
     then
         self:initializeFeedFromXml(response.content)
-        return true
+        return true, self
     else
-        return error(GazetteMessages.ERROR_FEED_FETCH)
+        return false, FeedError:provideFromResponse(response)
     end
-
-    -- Add more definition to the error, if there is one. Check the response codes, message, etc.
 end
 
 return Feed

@@ -1,6 +1,7 @@
 local Feed = require("feed/feed")
 local RssFeed = require("feed/rss/rssfeed")
 local AtomFeed = require("feed/atom/atomfeed")
+local FeedError = require("feed/feederror")
 
 local FeedFactory = {
 
@@ -10,7 +11,11 @@ function FeedFactory:make(url)
     local feed = Feed:new{
         url = url
     }
-    feed:fetch()
+
+    local ok, err = feed:fetch()
+    if not ok then
+        return false, err
+    end
 
     if is_atom(feed.xml) then
         return AtomFeed:new(feed)
@@ -18,6 +23,8 @@ function FeedFactory:make(url)
         return RssFeed:new(feed)
     elseif is_rdf(feed.xml) then
         -- Eventually add this
+    else
+        return false, FeedError.FEED_NOT_SUPPORTED_SYNDICATION_FORMAT
     end
 end
 

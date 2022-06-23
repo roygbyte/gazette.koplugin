@@ -19,7 +19,7 @@ function Response:new(o)
         o:setUrlFromHeaders()
     end
 
-    if o:isHostUnknown()
+    if not o:isHostKnown()
     then
         o.code = 404
     end
@@ -86,12 +86,12 @@ function Response:hasContent()
     end
 end
 
-function Response:isHostUnknown()
+function Response:isHostKnown()
     if self.code == "host or service not provided, or not known"
     then
-        return true
-    else
         return false
+    else
+        return true
     end
 end
 
