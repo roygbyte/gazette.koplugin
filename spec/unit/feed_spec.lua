@@ -40,4 +40,23 @@ describe("Feed", function()
                         assert.are.same("http://orgmode.org/img/org-mode-unicorn-logo.png", feed_1:getLogo())
                 end)
         end)
+        describe("Entry", function()
+                it("should return values we want regardless of whether it's Atom or Rss", function()
+                        local feed_rss = FeedFactory:make("https://scarlettmcallister.com/rss.xml")
+                        local rss_entry = feed_rss.entries[1]
+                        assert.is.truthy(rss_entry:getPermalink())
+                        assert.is.truthy(rss_entry:getPublished())
+
+                        local feed_atom = FeedFactory:make("https://ourworldindata.org/atom.xml")
+                        local atom_entry = feed_atom.entries[1]
+                        assert.is.truthy(atom_entry:getPermalink())
+                        assert.is.truthy(atom_entry:getPublished())
+                end)
+                it("should fetch content", function()
+                        local feed_rss = FeedFactory:make("https://scarlettmcallister.com/rss.xml")
+                        local rss_entry = feed_rss.entries[1]
+                        rss_entry:fetch()
+                        assert.is.truthy(rss_entry.content)
+                end)
+        end)
 end)

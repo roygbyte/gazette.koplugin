@@ -1,4 +1,5 @@
 local Feed = require("feed/feed")
+local EntryFactory = require("feed/entryfactory")
 local GazetteMessages = require("gazettemessages")
 local util = require("util")
 
@@ -14,9 +15,9 @@ local RssFeed = Feed:new {
     category = nil,
     generator = nil,
     image = {
-      url = nil,
-      title = nil,
-      link = nil,
+        url = nil,
+        title = nil,
+        link = nil,
     },
     skipHours = nil,
     skipDays = nil,
@@ -48,9 +49,17 @@ function RssFeed:initializeFeedFromXml(xml)
         url = channel.image.url,
         title = channel.image.title,
         link = channel.image.link
-    } or nil
+                                          } or nil
     self.skipHours = channel.skipHours
     self.skipDays = channel.skipDays
+    self:initializeEntries(channel.item)
+end
+
+function RssFeed:initializeEntries(entriesAsXml)
+    for index, entry in ipairs(entriesAsXml) do
+        local entry = EntryFactory:makeRss(entry)
+        table.insert(self.entries, entry)
+    end
 end
 
 return RssFeed

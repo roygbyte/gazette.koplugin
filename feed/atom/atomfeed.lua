@@ -1,5 +1,5 @@
 local Feed = require("feed/feed")
-local ArticleFactory = require("feed/articlefactory")
+local EntryFactory = require("feed/entryfactory")
 local GazetteMessages = require("gazettemessages")
 local util = require("util")
 
@@ -54,7 +54,7 @@ end
 
 function AtomFeed:initializeEntries(entriesAsXml)
     for index, entry in ipairs(entriesAsXml) do
-        local entry = ArticleFactory:makeAtom(entry)
+        local entry = EntryFactory:makeAtom(entry)
         table.insert(self.entries, entry)
     end
 end

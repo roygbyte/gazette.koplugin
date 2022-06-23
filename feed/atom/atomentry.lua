@@ -1,6 +1,6 @@
-local Article = require("feed/article")
+local Entry = require("feed/entry")
 
-local AtomArticle = Article:new {
+local AtomEntry = Entry:new {
     id = nil,
     updated = nil,
     link = {
@@ -15,7 +15,7 @@ local AtomArticle = Article:new {
     published = nil
 }
 
-function AtomArticle:new(o)
+function AtomEntry:new(o)
     o = o or {}
     self.__index = self
     setmetatable(o, self)
@@ -23,4 +23,4 @@ function AtomArticle:new(o)
     return o
 end
 
-return AtomArticle
+return AtomEntry

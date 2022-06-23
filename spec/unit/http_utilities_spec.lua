@@ -74,13 +74,17 @@ describe("HTTP Utilities", function()
         end)
         it("should not contain content from another response", function()
             local RequestFactory = require("libs/http/requestfactory")
-            
+
             local request_1 = RequestFactory:makeGetRequest("https://scarlettmcallister.com/rss.xml", {})
-            local response_1 = request_1:send()            
-            local request_2 = RequestFactory:makeGetRequest("https://ourworldindata.org/atom.xml", {})            
+            local response_1 = request_1:send()
+            local request_2 = RequestFactory:makeGetRequest("https://ourworldindata.org/atom.xml", {})
             local response_2 = request_2:send()
-            
+
             assert.are_not.same(response_2.headers.server, response_1.headers.server)
+        end)
+        it("should work for files, too?", function()
+                --https://thenewleafjournal.com/feed
+                -- Downloads a file with feed info...
         end)
     end)
 end)

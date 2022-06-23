@@ -5,6 +5,7 @@ local GazetteMessages = require("gazettemessages")
 local Feed = {
     url = "",
     xml = nil,
+    entries = {},
 }
 
 function Feed:new(o)
