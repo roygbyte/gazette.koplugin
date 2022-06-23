@@ -77,8 +77,8 @@ function Response:hasHeaders()
 end
 
 function Response:hasContent()
-    if self.content == nil and
-        tonumber(self.headers["content-length"]) == #self.content
+    if self.content == nil or
+        tonumber(self.headers["content-length"]) ~= #self.content
     then
         return false
     else
