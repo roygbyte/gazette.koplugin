@@ -54,6 +54,16 @@ function Response:hasRedirected()
     end
 end
 
+function Response:isOk()
+    if type(self.code) == "number" and
+        self.code == 200
+    then
+        return true
+    else
+        return false
+    end
+end
+
 function Response:hasCompleted()
     if not self.code or
         self.code == socketutil.TIMEOUT_CODE or

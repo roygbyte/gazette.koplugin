@@ -3,7 +3,8 @@ local ResponseFactory = require("libs/http/responsefactory")
 local FeedError = require("feed/feederror")
 
 local Feed = {
-    url = "",
+    title = nil,
+    url = nil,
     xml = nil,
     entries = {},
 }
@@ -37,6 +38,17 @@ function Feed:getLogo()
         self.image.url or self.logo
 end
 
+function Feed:isValid()
+    if self:getDescription() and
+        self:getPermalink() and
+        self:getUpdated()
+    then
+        return true
+    else
+        return false
+    end
+end
+
 function Feed:fetch()
     local request = RequestFactory:makeGetRequest(self.url, {})
     local response = request:send()
@@ -45,7 +57,7 @@ function Feed:fetch()
         response:isXml()
     then
         self:initializeFeedFromXml(response.content)
-        return true, self
+        return self
     else
         return false, FeedError:provideFromResponse(response)
     end

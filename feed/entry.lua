@@ -1,4 +1,5 @@
 local RequestFactory = require("libs/http/requestfactory")
+local FeedError = require("feed/feederror")
 
 local Entry = {
    content = nil
@@ -36,15 +37,24 @@ function Entry:fetch()
       local request = RequestFactory:makeGetRequest(self:getPermalink(), {})
       local response = request:send()
 
-      if response:canBeConsumed()
+      if response:canBeConsumed() and
+          response:hasContent() and
+          response:isOk()
       then
-         self.content = response.content
+          self.content = response.content
+          return true
+      else
+          return false, FeedError:provideFromResponse(response)
       end
    end
 end
 
 function Entry:getAuthor()
    return self.author
+end
+
+function Entry:getContent()
+    return self.content
 end
 
 return Entry
