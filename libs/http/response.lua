@@ -109,7 +109,7 @@ end
 function Response:setUrlFromHeaders()
     local url = self.headers.location
     local parsed_url = socket_url.parse(url)
-    self.url = socet_url.build(parsed_url)
+    self.url = socket_url.build(parsed_url)
 end
 
 function Response:decodeXml(xml_to_decode)
