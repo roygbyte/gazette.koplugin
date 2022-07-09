@@ -1,6 +1,6 @@
-local EpubError = require("libs/epub/epuberror")
+local EpubError = require("libs/gazette/epuberror")
 local xml2lua = require("libs/xml2lua/xml2lua")
-local Nav = require("libs/epub/item/nav")
+local Nav = require("libs/gazette/epub/package/item/nav")
 
 local Manifest = {
     items = nil,

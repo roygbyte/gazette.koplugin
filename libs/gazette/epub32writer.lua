@@ -1,27 +1,21 @@
-local EpubError = require("libs/epub/epuberror")
+local EpubError = require("libs/gazette/epuberror")
 local ZipWriter = require("ffi/zipwriter")
 local xml2lua = require("libs/xml2lua/xml2lua")
 
-local EpubWriter = ZipWriter:new {
+local Epub32Writer = ZipWriter:new {
     path = nil,
     temp_path = nil,
 }
 
-function EpubWriter:new(o)
+function Epub32Writer:new(o)
     o = o or {}
     self.__index = self
     setmetatable(o, self)
 
-    local ok, err = o:isOutputAvailable()
-    if not ok
-    then
-        return false, err
-    end
-
     return o
 end
 
-function EpubWriter:buildEpub(epub)
+function Epub32Writer:build(epub)
     local ok, err = self:openTempPath()
     if not ok
     then
@@ -39,20 +33,31 @@ function EpubWriter:buildEpub(epub)
     return true
 end
 
-function EpubWriter:addMimetype()
+function Epub32Writer:setPath(path)
+    local ok, err = self:isOutputAvailable(path)
+    if not ok
+    then
+        return false, err
+    else
+        self.path = path
+        return true
+    end    
+end
+
+function Epub32Writer:addMimetype()
     self:add("mimetype", "application/epub+zip")
 end
 
-function EpubWriter:addContainer()
-    local container = EpubWriter:getPart("container.xml")
+function Epub32Writer:addContainer()
+    local container = Epub32Writer:getPart("container.xml")
     self:add("META-INF/container.xml", container)
 end
 
-function EpubWriter:addPackage(packagio)
+function Epub32Writer:addPackage(packagio)
     self:add("OPS/package.opf", packagio)
 end
 
-function EpubWriter:addItems(items)
+function Epub32Writer:addItems(items)
     for _, item in ipairs(items) do
         local content = item:getContent()
         if content
@@ -62,7 +67,7 @@ function EpubWriter:addItems(items)
     end
 end
 
-function EpubWriter:openTempPath()
+function Epub32Writer:openTempPath()
     self.temp_path = self.path .. ".tmp"
 
     if not self:open(self.temp_path)
@@ -73,8 +78,8 @@ function EpubWriter:openTempPath()
     end
 end
 
-function EpubWriter:isOutputAvailable()
-    local test_path = self.path
+function Epub32Writer:isOutputAvailable(path)
+    local test_path = path
 
     if not self:open(test_path)
     then
@@ -86,8 +91,8 @@ function EpubWriter:isOutputAvailable()
     end
 end
 
-function EpubWriter:getPart(filename)
-    local file, err = xml2lua.loadFile("plugins/gazette.koplugin/libs/epub/templates/" .. filename)
+function Epub32Writer:getPart(filename)
+    local file, err = xml2lua.loadFile("plugins/gazette.koplugin/libs/gazette/epub/templates/" .. filename)
     if file
     then
         return file
@@ -96,4 +101,4 @@ function EpubWriter:getPart(filename)
     end
 end
 
-return EpubWriter
+return Epub32Writer

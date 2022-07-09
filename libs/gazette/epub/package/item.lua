@@ -1,4 +1,4 @@
-local EpubError = require("libs/epub/epuberror")
+local EpubError = require("libs/gazette/epuberror")
 local md5 = require("ffi/sha2").md5
 
 local Item = {

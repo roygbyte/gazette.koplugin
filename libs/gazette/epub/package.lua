@@ -1,7 +1,7 @@
 local xml2lua = require("libs/xml2lua/xml2lua")
-local Item = require("libs/epub/item")
-local Manifest = require("libs/epub/package/manifest")
-local Spine = require("libs/epub/package/spine")
+local Item = require("libs/gazette/epub/package/item")
+local Manifest = require("libs/gazette/epub/package/manifest")
+local Spine = require("libs/gazette/epub/package/spine")
 
 local Package = {
    title = nil,
@@ -29,7 +29,7 @@ function Package:setTitle(title)
 end
 
 function Package:addItem(item)
-   self.manifest:addItem(item)
+   local ok, err = self.manifest:addItem(item)
    -- This is flawed. Just 'cuz we add an item to the package doesn't mean it
    -- should go on the spine, or the nav for that matter.
    -- Some items will be scripts, styles... others will be XHTML. Need a way
@@ -40,7 +40,7 @@ function Package:addItem(item)
 end
 
 -- This Nav implementation is fonked out. It's heading in the right direction, i.e.: updating the items
--- by using the item's location... but locating it in the package tangles my little noodle.  
+-- by using the item's location... but locating it in the package tangles my little noodle.
 function Package:addItemToNav(item)
    if item.property == Item.PROPERTY.NAV
    then
@@ -78,15 +78,18 @@ function Package:addToNav()
 end
 
 function Package:getPackageXml()
-   local template = xml2lua.loadFile("plugins/gazette.koplugin/libs/epub/templates/package.xml")
+   -- TODO: Add error catching/display
+   local template, err = xml2lua.loadFile("plugins/gazette.koplugin/libs/gazette/epub/templates/package.xml")
+   local manifest, err = self.manifest:build()
+   local spine, err = self.spine:build()
    return string.format(
       template,
       self.title,
       self.language,
       self.modified,
-      self.manifest:build(),
-      self.spine:build()
-   ) --self.spine:build())
+      manifest,
+      spine
+   )
 end
 
 return Package
@@ -139,7 +142,7 @@ return Package
 --     return true
 -- end
 
--- local ok, err = o:initializeFromTemplateFile("plugins/gazette.koplugin/libs/epub/templates/package.xml")
+-- local ok, err = o:initializeFromTemplateFile("plugins/gazette.koplugin/libs/gazette/epub/templates/package.xml")
 
 -- if not ok
 -- then

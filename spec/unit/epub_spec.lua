@@ -1,15 +1,15 @@
 describe("Epub", function()
-        local EpubFactory
+        local Epub
+        local EpubError
+        local XHtmlItem
         local xhtml_example_content
         setup(function()
                 orig_path = package.path
                 package.path = "plugins/gazette.koplugin/?.lua;" .. package.path
                 require("commonrequire")
-                EpubFactory = require("libs/epub/epubfactory")
-                EpubError = require("libs/epub/epuberror")
-                FeedFactory = require("feed/feedfactory")
-                XHtmlItem = require("libs/epub/item/xhtmlitem")
-
+                EpubError = require("libs/gazette/epuberror")
+                Epub = require("libs/gazette/epub/epub")
+                XHtmlItem = require("libs/gazette/epub/package/item/xhtmlitem")
                 local ExampleContent = require("spec/unit/examplecontent")
                 xhtml_example_content = ExampleContent.XHTML_EXAMPLE_CONTENT
         end)
@@ -21,7 +21,7 @@ describe("Epub", function()
                         local item_two = XHtmlItem:new{
                             path = "another_random/path/to/content.xhtml"
                         }
-                        local Manifest = require("libs/epub/package/manifest")
+                        local Manifest = require("libs/gazette/epub/package/manifest")
                         local manifest = Manifest:new{}
                         manifest:addItem(item_one)
                         manifest:addItem(item_two)
@@ -42,7 +42,7 @@ describe("Epub", function()
                         local item = XHtmlItem:new{
                             path = "random/path/to/content.xhtml"
                         }
-                        local Manifest = require("libs/epub/package/manifest")
+                        local Manifest = require("libs/gazette/epub/package/manifest")
                         local manifest = Manifest:new{}
                         manifest:addItem(item)
                         manifest:addItem(item)
@@ -77,36 +77,6 @@ describe("Epub", function()
                         local xhtml_content, err = XHtmlItem:new{}
                         assert.are.same(false, xhtml_content)
                         assert.are.same(EpubError.ITEM_MISSING_PATH, err)
-                end)
-        end)
-        describe("EpubFactory", function()
-                it("should create a new EpubWriter when given valid path", function()
-                        local epubwriter, err = EpubFactory:makeWriter(
-                            "/home/scarlett/00_test_epub.epub"
-                        )
-                        assert.are_not.same(false, epubwriter)
-                end)
-                it("should throw an error when creating EpubWriter with invalid path", function()
-                        local epubwriter, err = EpubFactory:makeWriter(
-                            "/home/scarlett/not_a_directory/00_test_epub.epub"
-                        )
-                        assert.are.same(false, epubwriter)
-                        assert.are.same(EpubError.EPUBWRITER_INVALID_PATH, err)
-                end)
-                it("should build epub", function()
-                        local item = XHtmlItem:new{
-                            path = "content_1.xhtml",
-                            content = xhtml_example_content
-                        }
-                        local epub = EpubFactory:makeEpub()
-                        epub:addItem(item)
-
-                        local epubWriter, err = EpubFactory:makeWriter(
-                            "/home/scarlett/01_test_epub.epub"
-                        )
-                        local ok, err = epubWriter:buildEpub(epub)
-
-                        assert.are.same(ok, true)
                 end)
         end)
 end)

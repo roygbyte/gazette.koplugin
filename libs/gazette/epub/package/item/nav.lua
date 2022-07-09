@@ -1,5 +1,5 @@
 local GazetteMessages = require("gazettemessages")
-local Item = require("libs/epub/item")
+local Item = require("libs/gazette/epub/package/item")
 local xml2lua = require("libs/xml2lua/xml2lua")
 
 local Nav = Item:new{
@@ -32,7 +32,8 @@ function Nav:addItem(item)
 end
 
 function Nav:getContent()
-    local template = xml2lua.loadFile("plugins/gazette.koplugin/libs/epub/templates/nav.xhtml")
+    -- TODO: Add error catching/display
+    local template, err = xml2lua.loadFile("plugins/gazette.koplugin/libs/gazette/epub/templates/nav.xhtml")
     local items_list = "\n"
 
     for _, item in ipairs(self.items) do
