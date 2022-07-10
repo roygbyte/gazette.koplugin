@@ -1,10 +1,14 @@
 local EpubError = require("libs/gazette/epuberror")
 local Item = require("libs/gazette/epub/package/item")
-local md5 = require("ffi/sha2").md5
 local util = require("util")
 
 local XHtmlItem = Item:new {
     title = "Untitled Document",
+}
+
+XHtmlItem.SUPPORTED_FORMATS = {
+    xhtml = true,
+    html = true
 }
 
 function XHtmlItem:new(o)
