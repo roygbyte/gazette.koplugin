@@ -27,6 +27,22 @@ ItemFactory.ITEM_CONSTRUCTORS = {
     end
 }
 
+function ItemFactory:makeItemFromResource(resource)
+   local title = resource.title
+   local path = resource.filename
+   local content = resource:getData()
+   
+   local item, item_type = self:makeItem(path, content)
+
+   if item_type == "xhtml" and
+      title
+   then
+      item.title = title
+   end
+   
+   return item
+end
+
 function ItemFactory:makeItem(path, content)
     local suffix = util.getFileNameSuffix(
         string.lower(path)
@@ -44,7 +60,7 @@ function ItemFactory:makeItem(path, content)
         return false, EpubError.ITEMFACTORY_NONEXISTENT_CONSTRUCTOR
     end
 
-    return item_constructor(path, content)
+    return item_constructor(path, content), matched_type
 end
 
 function ItemFactory:getItemTypeFromFileNameSuffix(suffix)

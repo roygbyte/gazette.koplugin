@@ -13,6 +13,17 @@ function Epub:new(o)
     return o
 end
 
+function Epub:addFromList(iterator)
+    while true do
+        local item = iterator()
+        if item == nil
+        then
+            break
+        end
+        self:addItem(item)
+    end
+end
+
 -- Need a way to add a Webpage, which is an XHtmlItem and possibly images, scripts, and styles.
 -- Would this be a Epub method, or would it be elsewhere? The method would basically take the
 -- content returned by a HTTP request and then do the following:
