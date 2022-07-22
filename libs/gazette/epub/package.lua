@@ -30,19 +30,16 @@ end
 
 function Package:addItem(item)
    local ok, err = self.manifest:addItem(item)
-   -- This is flawed. Just 'cuz we add an item to the package doesn't mean it
-   -- should go on the spine, or the nav for that matter.
-   -- Some items will be scripts, styles... others will be XHTML. Need a way
-   -- to differentiate. No idea what the pattern should be...
-   -- Could do it based on the extension? parse the path for a "." and get what comes after?
-   self.spine:addItem(item)
-   self:addItemToNav(item)
+   if ok
+   then
+      self.spine:addItem(item)
+      self:addItemToNav(item)
+   end
 end
 
--- This Nav implementation is fonked out. It's heading in the right direction, i.e.: updating the items
--- by using the item's location... but locating it in the package tangles my little noodle.
 function Package:addItemToNav(item)
-   if item.property == Item.PROPERTY.NAV
+   if item.property == Item.PROPERTY.NAV or
+      item.add_to_nav == false
    then
       return false
    end

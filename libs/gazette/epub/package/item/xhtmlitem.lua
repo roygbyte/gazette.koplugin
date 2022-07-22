@@ -4,6 +4,7 @@ local util = require("util")
 
 local XHtmlItem = Item:new {
     title = "Untitled Document",
+    add_to_nav = true
 }
 
 XHtmlItem.SUPPORTED_FORMATS = {

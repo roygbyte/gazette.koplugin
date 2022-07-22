@@ -4,6 +4,7 @@ local util = require("util")
 
 local Image = Item:new {
    format = nil,
+   add_to_nav = false,
 }
 
 Image.SUPPORTED_FORMATS = {
@@ -23,15 +24,18 @@ function Image:new(o)
    then
       return false, EpubError.ITEM_MISSING_PATH
    end
-   
-   local format, err = o:getFormat(o.path)
 
+   -- Change "format" to "fileType" or "extension"
+   local format = o:isFormatSupported(o.path)
    if not format
    then
       return false, EpubError.IMAGE_UNSUPPORTED_FORMAT
    end
 
-   o.media_type = Image.SUPPORTED_FORMATS[format]
+   o.media_type = format
+   o:generateId()
+   o.path = o.path
+
    return o
 end
 
@@ -43,13 +47,13 @@ function Image:fetchContent(data_source)
 
 end
 
-function Image:getFormat(path)
+function Image:isFormatSupported(path)
    -- path = path and string.lower(path) or ""
    -- local extension = string.match(path, "[^.]+$")
    local extension = util.getFileNameSuffix(path)
    return Image.SUPPORTED_FORMATS[extension] and
-      extension or
-      false
+       Image.SUPPORTED_FORMATS[extension]  or
+       false
 end
 
 return Image

@@ -6,12 +6,15 @@ local Item = {
     path = nil,
     content = nil,
     media_type = nil,
-    properties = nil
+    properties = nil,
+    add_to_nav = nil
 }
 
 Item.PROPERTY = {
     NAV = "nav"
 }
+
+Item.TYPE = "default"
 
 function Item:new(o)
     o = o or {}
