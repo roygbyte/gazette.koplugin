@@ -24,6 +24,11 @@ Request.method = {
     post = "POST",
 }
 
+Request.scheme = {
+    http = "HTTP",
+    https = "HTTPS"
+}
+
 Request.default = {
     timeout = DEFAULT_TIMEOUT,
     maxtime = DEFAULT_MAXTIME,
