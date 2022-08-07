@@ -1,4 +1,3 @@
-
 describe("Feed", function()
         local FeedFactory
         setup(function()
@@ -81,7 +80,7 @@ describe("Feed", function()
                         rss_entry:fetch()
                         assert.is.truthy(rss_entry.content)
                 end)
-                it("should display error when entry can't get fetched", function()
+                it("should display error when entry can't be fetched", function()
                         local feed_rss = FeedFactory:make("https://scarlettmcallister.com/rss.xml")
                         local rss_entry = feed_rss.entries[1]
                         rss_entry.link = "https://scarlettmcallister.com/entry-that-does-not-exist"

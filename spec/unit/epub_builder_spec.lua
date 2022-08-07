@@ -11,7 +11,7 @@ describe("Epub Builder", function()
             EpubError = require("libs/gazette/epuberror")
             Epub = require("libs/gazette/epub/epub")
             FeedFactory = require("feed/feedfactory")
-            FeedError = require("feed/feederror")
+            HttpError = require("libs/http/httperror")
             XHtmlItem = require("libs/gazette/epub/package/item/xhtmlitem")
             ResourceAdapter = require("libs/gazette/resources/webpageadapter")
             WebPage = require("libs/gazette/resources/webpage")
@@ -43,7 +43,7 @@ describe("Epub Builder", function()
                   end)
             end)
             describe("WebPage", function()
-                  it("should fetch content when only given URL", function()                    
+                  it("should fetch content when only given URL", function()
                         local webpage = WebPage:new{
                            url = "https://www.gnupg.org/gph/en/manual.html",
                         }
@@ -54,7 +54,7 @@ describe("Epub Builder", function()
                            url = "https://www.gnupg-not-a-website.com",
                         }
                         assert.are.same(false, webpage)
-                        assert.are.same(FeedError.REQUEST_PAGE_NOT_FOUND, err)
+                        assert.are.same(HttpError.REQUEST_PAGE_NOT_FOUND, err)
                   end)
                   it("should build resources successfully", function()
                         local webpage = WebPage:new{
@@ -92,7 +92,7 @@ describe("Epub Builder", function()
 
                   assert.are.same(true, ok)
             end)
-            it("should build EPUB when given a Webpage", function()                    
+            it("should build EPUB when given a Webpage", function()
                   local webpage = WebPage:new{
                      url = "https://www.gnupg.org/gph/en/manual.html",
                      content = html_example_content_with_images

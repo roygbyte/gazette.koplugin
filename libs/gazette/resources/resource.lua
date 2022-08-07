@@ -1,4 +1,4 @@
-local HttpError = require("feed/feederror")
+local HttpError = require("libs/http/httperror")
 local RequestFactory = require("libs/http/requestfactory")
 
 local Resource = {
