@@ -88,8 +88,13 @@ describe("HTTP Utilities", function()
             assert.are_not.same(response_2.headers.server, response_1.headers.server)
         end)
         it("should work for files, too?", function()
-                --https://thenewleafjournal.com/feed
-                -- Downloads a file with feed info...
+            local RequestFactory = require("libs/http/requestfactory")
+
+            local request = RequestFactory:makeGetRequest("https://thenewleafjournal.com/feed", {})
+            local response, err = request:send()
+
+            assert.are.same("https://thenewleafjournal.com/feed/", response.url)
+            assert.are.same(true, response:isXml())
         end)
     end)
 end)
