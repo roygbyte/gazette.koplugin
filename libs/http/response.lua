@@ -108,7 +108,7 @@ end
 
 function Response:isXml()
     if self:hasHeaders() and
-        self.headers["content-type"] == "application/xml"
+        string.match(self.headers["content-type"], "application/(.*)xml(.*)")
     then
         return true
     else
