@@ -14,7 +14,7 @@ function Response:new(o)
     self.__index = self
     setmetatable(o, self)
 
-    if o:hasRedirected()
+    if o:hasHeaders()
     then
         o:setUrlFromHeaders()
     end
@@ -88,8 +88,10 @@ end
 
 function Response:hasContent()
     if self.content == nil or
-        type(self.content) == "string" and
-        tonumber(self.headers["content-length"]) ~= #self.content
+       not type(self.content) == "string"
+    -- tonumber(self.headers["content-length"]) ~= #self.content)
+    -- It would be ideal to check the content's length, but not all
+    -- requests supply that value.
     then
         return false
     else
@@ -118,8 +120,12 @@ end
 
 function Response:setUrlFromHeaders()
     local url = self.headers.location
-    local parsed_url = socket_url.parse(url)
-    self.url = socket_url.build(parsed_url)
+
+    if url
+    then
+        local parsed_url = socket_url.parse(url)
+        self.url = socket_url.build(parsed_url)
+    end
 end
 
 function Response:decodeXml(xml_to_decode)
@@ -131,6 +137,9 @@ function Response:decodeXml(xml_to_decode)
             parser:parse(xml_to_decode)
     end)
     if not ok then
+        -- when this method returns, the response's content attribute
+        -- will be set to nil, meaning the response will be considered
+        -- without content.
         return nil
     end
     return handler.root
