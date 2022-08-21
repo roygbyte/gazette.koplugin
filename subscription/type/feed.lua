@@ -58,4 +58,29 @@ function Feed:sync()
    return true
 end
 
+function Feed:isUrlValid(url)
+   if not url or
+      not type(url) == "string"
+   then
+      return false
+   end
+
+   local parsed_url = socket_url.parse(url)
+
+   if parsed_url.host
+   then
+      return true
+   else
+      return false
+   end
+end
+
+function Feed:getTitle()
+   return self.feed.title
+end
+
+function Feed:getDescription()
+   return self.feed:getDescription()
+end
+
 return Feed

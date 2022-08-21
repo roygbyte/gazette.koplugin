@@ -31,4 +31,12 @@ function Subscription:onSuccessfulSync()
    self.last_fetch = os.date()
 end
 
+function Subscription:getTitle()
+   return "Untitled"
+end
+
+function Subscription:getDescription()
+   return ""
+end
+
 return Subscription
