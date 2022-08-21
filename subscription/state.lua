@@ -1,14 +1,13 @@
 local DataStorage = require("datastorage")
 local LuaSettings = require("frontend/luasettings")
-local LuaData = require('luadata')
 
-local data_storage_dir = "/home/scarlett" -- print(DataStorage:getSettingsDir())
-
-local State = {
+local State  = {
    id = nil,
-   state_file = "news_config.lua",
    lua_settings = nil,
 }
+
+State.STATE_FILE = "gazette_subscription_config.lua"
+State.DATA_STORAGE_DIR = "/home/scarlett" -- print(DataStorage:getSettingsDir())
 
 function State:new(o)
    o = o or {}
@@ -19,7 +18,7 @@ function State:new(o)
 end
 
 function State:init()
-   self.lua_settings = LuaSettings:open(("%s/%s"):format(data_storage_dir, self.state_file))
+   self.lua_settings = LuaSettings:open(("%s/%s"):format(State.DATA_STORAGE_DIR, State.STATE_FILE))
 
    if not self.lua_settings
    then
