@@ -28,13 +28,12 @@ function Feed:_init(o)
    -- current object.
    getmetatable(self):_init(o)
 
+   self.subscription_type = Feed.subscription_type
    self.url = o.url
    self.limit = o.limit
    self.download_full_article = o.download_full_article
    self.include_images = o.enabled_filter
    self.filter_element = o.filter_element
-
-   print(self.subscription_type)
 end
 
 function Feed:sync()
