@@ -1,6 +1,6 @@
 local Subscription = require("subscription/subscription")
-local SubscriptionFactory = require("subscription/subscriptionfactory")
 local FeedFactory = require("feed/feedfactory")
+local socket_url = require("socket.url")
 
 local Feed = Subscription:new{
    subscription_type = "feed",
