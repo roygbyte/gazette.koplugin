@@ -29,9 +29,19 @@ end
 function State:load()
    local state = self.lua_settings:child(self.id)
 
+   local state_has_data = false
    for key, value in pairs(state.data) do
+      state_has_data = true
       self[key] = value
    end
+
+   if not state_has_data and
+      self.id ~= nil
+   then
+      return false
+   end
+
+   return self
 end
 
 function State:save()
@@ -41,6 +51,11 @@ function State:save()
    end
 
    self.lua_settings:saveSetting(self.id, self)
+   self.lua_settings:flush()
+end
+
+function State:delete()
+   self.lua_settings:delSetting(self.id)
    self.lua_settings:flush()
 end
 
@@ -56,8 +71,8 @@ function State:generateUniqueId(maybe_id)
    return self:generateUniqueId(maybe_id + 1)
 end
 
-function State:deleteConfig()
-   os.remove(("%s/%s"):format(data_storage_dir, self.state_file))
+function State.deleteConfig()
+   os.remove(("%s/%s"):format(State.DATA_STORAGE_DIR, State.STATE_FILE))
 end
 
 return State

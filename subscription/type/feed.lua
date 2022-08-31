@@ -10,6 +10,7 @@ local Feed = Subscription:new{
    include_images = false,
    enabled_filter = false,
    filter_element = nil,
+   download_directory = nil,
 }
 
 function Feed:new(o)
@@ -18,7 +19,7 @@ function Feed:new(o)
    self.__index = self
 
    o:_init(o)
-   o:load()
+   o = o:load()
 
    return o
 end

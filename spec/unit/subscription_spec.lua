@@ -34,6 +34,17 @@ describe("Subscription", function()
                   assert.are.same(subscription_id_to_persist, subscription.id)
                   assert.are.same(our_world_in_data_feed, subscription.url)
             end)
+            it("should deleted when delete method is invoked", function()
+                  local subscription = Subscription:new({
+                        id = subscription_id_to_persist
+                  })
+                  subscription:delete()
+
+                  local no_subscription = Subscription:new({
+                        id = subscription_id_to_persist
+                  })
+                  assert.are.same(false, no_subscription)
+            end)
       end)
       describe("FeedSubscription", function()
             local feed_subscription_id

@@ -1,4 +1,3 @@
-local FeedFactory = require("feed/feedfactory")
 local State = require("subscription/state")
 
 local Subscription = State:new{
@@ -11,7 +10,7 @@ function Subscription:new(o)
    self.__index = self
 
    o:_init(o)
-   o:load()
+   o = o:load()
 
    return o
 end
