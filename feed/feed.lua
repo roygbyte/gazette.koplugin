@@ -11,8 +11,8 @@ local Feed = {
 
 function Feed:new(o)
     o = o or {}
-    self.__index = self
     setmetatable(o, self)
+    self.__index = self
 
     return o
 end
