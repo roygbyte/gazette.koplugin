@@ -8,10 +8,9 @@ local EditDialog = {
 
 }
 
-function EditDialog:addSubscription(composer)
+function EditDialog:newFeed(composer)
    local dialog
    local passed_test = false
-   local subscription
    dialog = MultiInputDialog:new{
       title = _("Add a RSS or Atom feed"),
       fields = {
@@ -20,6 +19,10 @@ function EditDialog:addSubscription(composer)
             text = _("https://"),
             hint = _("URL"),
          },
+         {
+            description = _("Download directory"),
+            text = composer:getDownloadDirectory()
+         },
       },
       buttons = {
          {
@@ -27,7 +30,7 @@ function EditDialog:addSubscription(composer)
                text = _("Cancel"),
                id = "close",
                callback = function()
-                  UIManager:close(sample_input)
+                  UIManager:close(dialog)
                end
             },
             {
@@ -35,12 +38,22 @@ function EditDialog:addSubscription(composer)
                callback = function()
                   local Trapper = require("ui/trapper")
                   Trapper:wrap(function()
-                        subscription = composer:testFeed(dialog)
-
-                        if subscription
+                        passed_test, new_subscription = composer:testFeed(dialog)
+                        if passed_test
                         then
-                           passed_test = true
+                           composer:updateSubscription(new_subscription)
                         end
+                  end)
+               end
+            },
+            {
+               text = _("Set download directory"),
+               callback = function()
+                  composer:chooseDownloadDirectory(function(path)
+                     if path
+                     then
+                        dialog:getInputFields()[2]:setText(path)
+                     end
                   end)
                end
             },
@@ -53,8 +66,85 @@ function EditDialog:addSubscription(composer)
                         then
                            Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
                         else
-                           subscription:save()
+                           composer:saveSubscription()
                            UIManager:close(dialog)
+                        end
+                  end)
+               end
+            },
+         },
+      },
+   }
+   return dialog
+end
+
+function EditDialog:editFeed(composer, subscription)
+   local dialog
+   local passed_test = false
+   dialog = MultiInputDialog:new{
+      title = _("Edit feed"),
+      fields = {
+         {
+            description = _("URL"),
+            text = subscription.url
+         },
+         {
+            description = _("Download Directory"),
+            text = subscription:getDownloadDirectory()
+         },
+      },
+      buttons = {
+         {
+            {
+               text = _("Cancel"),
+               id = "close",
+               callback = function()
+                  UIManager:close(dialog)
+               end
+            },
+            {
+               text = _("Test"),
+               callback = function()
+                  local Trapper = require("ui/trapper")
+                  Trapper:wrap(function()
+                        passed_test, new_subscription = composer:testFeed(dialog)
+
+                        if passed_test
+                        then
+                           passed_test = true
+                           -- This next assignment is not ideal. If there is any important
+                           -- history in the stored subscription, it'll be overwritten. So this
+                           -- could actually cause a dissonance between what the user has or hasn't read.
+                           -- Better would be to just update the subscription with the changed fields.
+                           subscription = composer:updateSubscription(new_subscription)
+                        end
+                  end)
+               end
+            },
+            {
+               text = _("Delete"),
+               callback = function()
+                  local Trapper = require("ui/trapper")
+                  Trapper:wrap(function()
+                        composer:deleteSubscription()
+                        UIManager:close(dialog)
+                        dialog.callback()
+                  end)
+               end
+            },
+            {
+               text = _("Save"),
+               callback = function(touchmenu_instance)
+                  local Trapper = require("ui/trapper")
+                  Trapper:wrap(function()
+                        if composer:hasUrlChanged(dialog) and
+                           passed_test == false
+                        then
+                           Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
+                        else
+                           composer:saveSubscription()
+                           UIManager:close(dialog)
+                           dialog.callback()
                         end
                   end)
                end
