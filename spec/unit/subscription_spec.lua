@@ -8,12 +8,13 @@ describe("Subscription", function()
             Subscription = require("subscription/subscription")
             Subscriptions = require("subscription/subscriptions")
             FeedSubscription = require("subscription/type/feed")
+            SubscriptionFactory = require("subscription/subscriptionfactory")
             State = require("subscription/state")
             logger = require("logger")
             our_world_in_data_feed = "https://ourworldindata.org/atom.xml"
       end)
       teardown(function()
-            State:deleteConfig()
+            -- State:deleteConfig()
       end)
       describe("Subscription", function()
             it("should generate a unique ID for each new subscription", function()
@@ -84,6 +85,17 @@ describe("Subscription", function()
             end)
             -- Find and create the right type of subscription from the history file.
       end)
+      describe("SubscriptionFactory", function()
+            it("should create a new subscription", function()
+                  local configuration = {
+                     url = "https://ourworldindata.org"
+                  }
+                  local subscription = SubscriptionFactory:makeFeed(configuration)
+                  subscription:sync()
+                  subscription:save()
+                  print(subscription.id)
+            end)
+      end)
       describe("Subscriptions", function()
             it("should list all subscriptions", function()
                   local subscriptions = Subscriptions.all()
@@ -91,6 +103,16 @@ describe("Subscription", function()
                   for _, subscription in pairs(subscriptions) do
                      assert.are.same("Our World in Data", subscription.feed.title)
                   end
+            end)
+            it("should sync all subscriptions", function()
+                  local subscriptions = Subscriptions:sync(
+                     function(update)
+                        print(update)
+                     end,
+                     function(result)
+                        require("logger").dbg(result)
+                     end
+                  )
             end)
       end)
 end)

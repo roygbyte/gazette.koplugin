@@ -10,16 +10,32 @@ SubscriptionFactory.SUBSCRIPTION_TYPES = {
 }
 
 function SubscriptionFactory:makeFeed(configuration)
-   -- Do I need to assign the values... or can I just pass the configuration table?
-   return FeedSubscription:new{
-      url = configuration.url,
-      limit = configuration.limit,
-      download_full_article = configuration.download_full_article,
-      include_images = configuration.include_images,
-      enabled_filter = configuration.enabled_filter,
-      filter_element = configuration.filter_element,
-      feed = Feed:new(configuration.feed) or nil
-   }
+   -- If a feed exists with the ID, it will be loaded.
+   feed = FeedSubscription:new({
+         id = configuration.id
+   })
+   -- If the feed wasn't loaded, there'll be no URL in the object.
+   -- Likely, we're making a new subscription.
+   if not feed.url
+   then
+      local feed = FeedSubscription:new{
+         url = configuration.url,
+         limit = configuration.limit,
+         download_full_article = configuration.download_full_article,
+         download_directory = configuration.download_directory,
+         include_images = configuration.include_images,
+         enabled_filter = configuration.enabled_filter,
+         filter_element = configuration.filter_element,
+         feed = configuration.feed
+      }
+   end
+
+   if not feed.feed
+   then
+      feed.feed = Feed:new(configuration.feed) or nil
+   end
+
+   return feed
 end
 
 return SubscriptionFactory
