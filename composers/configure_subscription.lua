@@ -1,29 +1,39 @@
 local UIManager = require("ui/uimanager")
 local EditDialog = require("views/subscription_edit_dialog")
-local FeedFactory = require("feed/feedfactory")
 local SubscriptionFactory = require("subscription/subscriptionfactory")
+local FeedSubscription = require("subscription/type/feed")
 
-local UIManager = require("ui/uimanager")
 local InfoMessage = require("ui/widget/infomessage")
 local GazetteMessages = require("gazettemessages")
 local Screen = require("device").screen
 local T = require("ffi/util").template
 
 local ConfigureSubscription = {
-
+   subscription = nil,
 }
 
-function ConfigureSubscription:editFeed()
-   UIManager:show(EditDialog:addSubscription(self))
+function ConfigureSubscription:newFeed()
+   self.subscription = SubscriptionFactory:makeFeed({})
+   UIManager:show(EditDialog:newFeed(self, subscription))
+end
+
+function ConfigureSubscription:editFeed(subscription, callback)
+   self.subscription = subscription
+   local dialog = EditDialog:editFeed(self, self.subscription)
+   dialog.callback = function()
+      callback()
+   end
+
+   UIManager:show(dialog)
 end
 
 function ConfigureSubscription:testFeed(dialog)
    local Trapper = require("ui/trapper")
    Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_FEED_BEGIN)
 
-   local subscription, err = ConfigureSubscription:createFeedFromDialog(dialog)
+   local test_subscription, err = ConfigureSubscription:createFeedFromDialog(dialog)
 
-   if not subscription
+   if not test_subscription
    then
       local error_message = T(GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_ERROR, err)
       Trapper:info(error_message)
@@ -31,7 +41,7 @@ function ConfigureSubscription:testFeed(dialog)
    end
 
    Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_FETCH_URL)
-   local success, err = subscription:sync() --FeedFactory:make(subscription.url)
+   local success, err = test_subscription:sync()
 
    if not success
    then
@@ -40,25 +50,73 @@ function ConfigureSubscription:testFeed(dialog)
       return false
    end
 
-   local success_message = T(GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_SUCCESS, subscription.feed.title)
-   print(subscription.feed:getDescription())
+   local success_message = T(GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_SUCCESS, test_subscription.feed.title)
    Trapper:info(success_message)
 
-   return subscription
+   return true, test_subscription
 end
 
-function ConfigureSubscription:saveFeed(feed)
-   feed:save()
+function ConfigureSubscription:deleteSubscription()
+   self.subscription:delete()
+end
+
+function ConfigureSubscription:saveSubscription()
+   self.subscription:save()
+end
+
+function ConfigureSubscription:hasUrlChanged(dialog)
+   local url = dialog:getFields()[1]
+
+   if url and
+      url ~= self.subscription.url
+   then
+      return true
+   else
+      return false
+   end
+end
+
+function ConfigureSubscription:chooseDownloadDirectory(callback)
+   require("ui/downloadmgr"):new
+   {
+      onConfirm = function(path)
+         -- Copy old dir to new dir?
+         -- FFIUtil.copyFile(self.feed_config_path, ("%s/%s"):format(path, self.feed_config_file))
+         self.subscription:setDownloadDirectory(path)
+         callback(path)
+      end
+   }:chooseDir()
+end
+
+function ConfigureSubscription:setFeedUrl(url)
+   self.subscription.url = url
+end
+
+function ConfigureSubscription:updateSubscription(new_subscription)
+   self.subscription.url = new_subscription.url
+   self.subscription.feed = new_subscription.feed
+   -- self.subscription:setTitle(new_subscription:getTitle())
+   -- self.subscription:setDescription(new_subscription:getDescription())
+end
+
+function ConfigureSubscription:getUrlFromDialog(dialog)
+   local fields = dialog:getFields()
+   return fields[1]
+end
+
+function ConfigureSubscription:getDownloadDirectory()
+   return self.subscription:getDownloadDirectory()
 end
 
 function ConfigureSubscription:createFeedFromDialog(dialog)
-   local fields = dialog:getFields()
-
    local configuration = {
-      url = fields[1]
+      url = ConfigureSubscription:getUrlFromDialog(dialog)
    }
 
-   return SubscriptionFactory:makeFeed(configuration)
+   local subscription, err = FeedSubscription:new({})
+   subscription.url = configuration.url
+
+   return subscription
 end
 
 return ConfigureSubscription
