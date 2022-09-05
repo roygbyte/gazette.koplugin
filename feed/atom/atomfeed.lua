@@ -49,6 +49,7 @@ function AtomFeed:initializeFeedFromXml(xml)
     self.icon = channel.icon
     self.logo = channel.logo
     self.rights = channel.rights
+    self.entries = {}
     self:initializeEntries(channel.entry)
 end
 

@@ -21,6 +21,7 @@ local RssFeed = Feed:new {
     },
     skipHours = nil,
     skipDays = nil,
+    entries = {}
 }
 
 function RssFeed:new(o)
@@ -52,6 +53,7 @@ function RssFeed:initializeFeedFromXml(xml)
                                           } or nil
     self.skipHours = channel.skipHours
     self.skipDays = channel.skipDays
+    self.entries = {}
     self:initializeEntries(channel.item)
 end
 
