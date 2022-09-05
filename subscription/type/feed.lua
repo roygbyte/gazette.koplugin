@@ -1,6 +1,7 @@
 local Subscription = require("subscription/subscription")
 local FeedFactory = require("feed/feedfactory")
 local socket_url = require("socket.url")
+local DataStorage = require("datastorage")
 
 local Feed = Subscription:new{
    subscription_type = "feed",
@@ -35,6 +36,20 @@ function Feed:_init(o)
    self.download_full_article = o.download_full_article
    self.include_images = o.enabled_filter
    self.filter_element = o.filter_element
+end
+
+function Feed:save()
+   self.feed.xml = nil
+   -- This is pulled from State:save(). I wanted to call this
+   -- through the same getmetatable magic used in _init... but
+   -- it "didn't work".
+   if not self.id
+   then
+      self.id = self:generateUniqueId()
+   end
+
+   self.lua_settings:saveSetting(self.id, self)
+   self.lua_settings:flush()
 end
 
 function Feed:sync()
@@ -81,6 +96,37 @@ end
 
 function Feed:getDescription()
    return self.feed:getDescription()
+end
+
+function Feed:setTitle(title)
+   self.feed.title = title
+end
+
+function Feed:setDescription(description)
+   -- This is a strange place to assign the values.
+   -- We're operating on the feed data outside of the object.
+   -- Why not just move this logic into the feed object?
+   if self.feed.subtitle
+   then
+      self.feed.subtitle = description
+   elseif self.feed.description
+   then
+      self.feed.description = description
+   end
+end
+
+function Feed:setDownloadDirectory(path)
+   self.download_directory = path
+end
+
+function Feed:getDownloadDirectory()
+   if self.download_directory
+   then
+      print(self.download_directory)
+      return self.download_directory
+   else
+      return DataStorage:getDataDir() .. "/news/"
+   end
 end
 
 return Feed
