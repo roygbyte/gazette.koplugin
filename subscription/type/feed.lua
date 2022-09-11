@@ -36,6 +36,8 @@ function Feed:_init(o)
    self.download_full_article = o.download_full_article
    self.include_images = o.enabled_filter
    self.filter_element = o.filter_element
+   -- self.feed isn't initialized here. Instead, it's initialized in the
+   -- SubscriptionFactory.
 end
 
 function Feed:save()
