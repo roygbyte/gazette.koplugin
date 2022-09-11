@@ -8,6 +8,7 @@ local UIManager = require("ui/uimanager")
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local _ = require("gettext")
 
+local GazetteMessages = require("gazettemessages")
 local ConfigureSubscription = require("composers/configure_subscription")
 local ViewSubscriptions = require("composers/view_subscriptions")
 local SyncSubscriptions = require("composers/sync_subscriptions")
@@ -33,19 +34,19 @@ end
 function Gazette:getSubMenuItems()
    return {
       {
-         text = _("Sync"),
+         text = GazetteMessages.MENU_SYNC,
          callback = function()
             self:syncSubscriptions()
          end
       },
       {
-         text = _("Manage subscriptions"),
+         text = GazetteMessages.MENU_MANAGE_SUBSCRIPTIONS,
          callback = function()
             self:viewSubscriptions()
          end
       },
       {
-         text = _("Settings"),
+         text = GazetteMessages.MENU_SETTINGS,
          sub_item_table = self:getConfigureSubMenuItems()
       }
    }
@@ -53,12 +54,12 @@ end
 
 function Gazette:getConfigureSubMenuItems()
    return {
-      {
-         text = _("Add Subscription"),
-         callback = function()
-            ConfigureSubscription:newFeed()
-         end
-      },
+      -- {
+      --    text = _("Add Subscription"),
+      --    callback = function()
+      --       ConfigureSubscription:newFeed()
+      --    end
+      -- },
    }
 end
 

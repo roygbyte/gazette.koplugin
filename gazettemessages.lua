@@ -4,6 +4,15 @@ local GazetteMessages = {
 
 }
 
+GazetteMessages.MENU_SYNC = _("Sync")
+GazetteMessages.MENU_MANAGE_SUBSCRIPTIONS = _("Manage subscriptions")
+GazetteMessages.MENU_SETTINGS = _("Settings")
+
+GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_EDIT = _("Edit")
+GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_DELETE = _("Delete")
+
+GazetteMessages.VIEW_SUBSCRIPTIONS_LIST = _("Subscriptions")
+
 GazetteMessages.ERROR_FEED_FETCH = _("Error fetching feed.")
 GazetteMessages.ERROR_ENTRY_FETCH = _("Error fetching entry.")
 GazetteMessages.UNTITLED_FEED = _("Untitled feed")
