@@ -7,6 +7,7 @@ local State  = {
 }
 
 State.STATE_FILE = "gazette_subscription_config.lua"
+State.ID_PREFIX = "subscription_"
 State.DATA_STORAGE_DIR = "/home/scarlett" -- print(DataStorage:getSettingsDir())
 
 function State:new(o)
@@ -61,7 +62,7 @@ end
 
 function State:generateUniqueId(maybe_id)
    maybe_id = maybe_id or 1
-   local maybe_key = "subscription_" .. tostring(maybe_id)
+   local maybe_key = State.ID_PREFIX .. tostring(maybe_id)
 
    if not self.lua_settings:has(maybe_key)
    then
