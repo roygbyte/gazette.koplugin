@@ -12,16 +12,21 @@ local ConfigureSubscription = {
    subscription = nil,
 }
 
-function ConfigureSubscription:newFeed()
+function ConfigureSubscription:newFeed(callback)
    self.subscription = SubscriptionFactory:makeFeed({})
-   UIManager:show(EditDialog:newFeed(self, subscription))
+   local dialog = EditDialog:newFeed(self, self.subscription)
+   dialog.callback = function()
+      callback(self.subscription)
+   end
+
+   UIManager:show(dialog)
 end
 
 function ConfigureSubscription:editFeed(subscription, callback)
    self.subscription = subscription
    local dialog = EditDialog:editFeed(self, self.subscription)
    dialog.callback = function()
-      callback()
+      callback(self.subscription)
    end
 
    UIManager:show(dialog)

@@ -67,7 +67,7 @@ function EditDialog:newFeed(composer)
                            Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
                         else
                            composer:saveSubscription()
-                           UIManager:close(dialog)
+                           self:close(dialog)
                         end
                   end)
                end
@@ -122,6 +122,17 @@ function EditDialog:editFeed(composer, subscription)
                end
             },
             {
+               text = _("Set download directory"),
+               callback = function()
+                  composer:chooseDownloadDirectory(function(path)
+                     if path
+                     then
+                        dialog:getInputFields()[2]:setText(path)
+                     end
+                  end)
+               end
+            },
+            {
                text = _("Delete"),
                callback = function()
                   local Trapper = require("ui/trapper")
@@ -143,8 +154,7 @@ function EditDialog:editFeed(composer, subscription)
                            Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
                         else
                            composer:saveSubscription()
-                           UIManager:close(dialog)
-                           dialog.callback()
+                           self:close(dialog)
                         end
                   end)
                end
@@ -153,6 +163,11 @@ function EditDialog:editFeed(composer, subscription)
       },
    }
    return dialog
+end
+
+function EditDialog:close(dialog)
+   dialog.callback()
+   UIManager:close(dialog)
 end
 
 return EditDialog
