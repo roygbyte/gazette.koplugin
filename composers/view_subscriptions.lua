@@ -1,9 +1,10 @@
 local UIManager = require("ui/uimanager")
 local KeyValuePage = require("ui/widget/keyvaluepage")
-local _ = require("gettext")
 
+local GazetteMessages = require("gazettemessages")
 local Subscriptions = require("subscription/subscriptions")
 local ConfigureSubscription = require("composers/configure_subscription")
+local SubscriptionActionDialog = require("composers/subscription_action_dialog")
 local ViewSubscriptions = {}
 
 function ViewSubscriptions:list()
@@ -19,7 +20,7 @@ function ViewSubscriptions:list()
             subscription:getTitle(),
             subscription:getDescription(),
             callback = function()
-               ConfigureSubscription:editFeed(subscription, function()
+               SubscriptionActionDialog:show(subscription, function()
                      ViewSubscriptions:refresh()
                end)
             end
@@ -27,9 +28,15 @@ function ViewSubscriptions:list()
    end
 
    self.view = KeyValuePage:new{
-         title = _("Subscriptions"),
+         title = GazetteMessages.VIEW_SUBSCRIPTIONS_LIST,
          value_overflow_align = "right",
          kv_pairs = kv_pairs,
+         title_bar_left_icon = "plus",
+         title_bar_left_icon_tap_callback = function()
+            ConfigureSubscription:newFeed(function(subscription)
+                  ViewSubscriptions:refresh()
+            end)
+         end
    }
 
    UIManager:show(self.view)
