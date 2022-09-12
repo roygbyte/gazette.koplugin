@@ -30,14 +30,14 @@ function EpubBuildDirector:construct(epub)
     if ok
     then
         -- Use case for returning path as result could be: if writer
-        -- adjusts path to account for existing file. 
+        -- adjusts path to account for existing file.
         -- E.g.: my_new_epub_didnot_overwrite_anything(1).epub
         -- Or maybe we want to get the filesize of the doc. Etc!
         -- Best to build the bones for the routine. A gift for the future!
         self.result = self.writer.path
         return true
     else
-        return err
+        return false, err
     end
 end
 
