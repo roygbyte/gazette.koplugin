@@ -4,6 +4,7 @@ local LuaSettings = require("frontend/luasettings")
 local SubscriptionFactory = require("subscription/subscriptionfactory")
 local SubscriptionBuilder = require("views/subscription_builder")
 local State = require("subscription/state")
+local ResultsFactory = require("subscription/result/resultsfactory")
 
 local Subscriptions = {
    lua_settings = nil
@@ -48,39 +49,24 @@ end
 
 function Subscriptions:sync(progress_callback, finished_callback)
    local initialized_subscriptions = Subscriptions.all()
-   local results = {}
+   local sync_results = {}
 
    for id, subscription in pairs(initialized_subscriptions) do
       subscription:sync()
 
-      local subscription_result = {
-         title = subscription:getTitle(),
-         description = #subscription.feed.entries
-      }
-      local entry_results = {}
+      local subscription_results = ResultsFactory:makeResults(subscription)
 
-      local limit = subscription.limit
-      local count = 0
-      for _, entry in pairs(subscription.feed.entries) do
+      for _, entry in pairs(subscription:getNewEntries(subscription.limit)) do
          progress_callback(subscription:getTitle() .. ": " .. entry:getTitle())
-         local result, err = SubscriptionBuilder:buildSingleEntry(subscription, entry)
-         local description = result or err
-         table.insert(entry_results, {
-               title = entry:getTitle(),
-               description = description
-         })
-         count = count + 1
-         if count > limit
-         then
-            break
-         end
+         local entry_result, err = SubscriptionBuilder:buildSingleEntry(subscription, entry)
+         subscription_results:add(entry_result)
       end
 
-      subscription_result.entry_results = entry_results
-      table.insert(results, subscription_result)
+      subscription_results:save()
+      table.insert(sync_results, subscription_results)
    end
 
-   finished_callback(results)
+   finished_callback(sync_results)
 end
 
 return Subscriptions

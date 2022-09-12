@@ -3,6 +3,8 @@ local FeedFactory = require("feed/feedfactory")
 local socket_url = require("socket.url")
 local DataStorage = require("datastorage")
 
+local Results = require("subscription/result/results")
+
 local Feed = Subscription:new{
    subscription_type = "feed",
    url = nil,
@@ -34,6 +36,7 @@ function Feed:_init(o)
    self.url = o.url
    self.limit = o.limit
    self.download_full_article = o.download_full_article
+   self.download_directory = o.download_directory
    self.include_images = o.enabled_filter
    self.filter_element = o.filter_element
    -- self.feed isn't initialized here. Instead, it's initialized in the
@@ -104,6 +107,47 @@ function Feed:setTitle(title)
    self.feed.title = title
 end
 
+function Feed:getAllEntries(limit)
+   if limit == nil or
+      type(limit) ~= "number" or
+      (type(limit) == "number" and limit == -1)
+   then
+      return self.feed.entries
+   else
+      local limited_entries = {}
+      local count = 0
+      for _, entry in pairs(self.feed.entries) do
+         table.insert(limited_entries, entry)
+         count = count + 1
+         if count >= limit
+         then
+            break
+         end
+      end
+      return limited_entries
+   end
+end
+
+function Feed:getNewEntries(limit)
+   local results = Results.forFeed(self.id)
+   local all_entries = self:getAllEntries(limit)
+   local new_entries = {}
+
+   if not results
+   then
+      return all_entries
+   end
+
+   for id, entry in pairs(all_entries) do
+      if not results:hasEntry(entry)
+      then
+         table.insert(new_entries, entry)
+      end
+   end
+
+   return new_entries
+end
+
 function Feed:setDescription(description)
    -- This is a strange place to assign the values.
    -- We're operating on the feed data outside of the object.
@@ -124,7 +168,6 @@ end
 function Feed:getDownloadDirectory()
    if self.download_directory
    then
-      print(self.download_directory)
       return self.download_directory
    else
       return DataStorage:getDataDir() .. "/news/"
