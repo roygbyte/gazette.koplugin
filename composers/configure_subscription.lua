@@ -69,6 +69,11 @@ function ConfigureSubscription:saveSubscription()
    self.subscription:save()
 end
 
+function ConfigureSubscription:updateFromDialog(dialog)
+   self.subscription.download_directory = self:getDownloadDirectoryFromDialog(dialog)
+   self.subscription.url = self:getUrlFromDialog(dialog)
+end
+
 function ConfigureSubscription:hasUrlChanged(dialog)
    local url = dialog:getFields()[1]
 
@@ -97,16 +102,19 @@ function ConfigureSubscription:setFeedUrl(url)
    self.subscription.url = url
 end
 
-function ConfigureSubscription:updateSubscription(new_subscription)
+function ConfigureSubscription:updateSubscriptionFromTest(new_subscription)
    self.subscription.url = new_subscription.url
    self.subscription.feed = new_subscription.feed
-   -- self.subscription:setTitle(new_subscription:getTitle())
-   -- self.subscription:setDescription(new_subscription:getDescription())
 end
 
 function ConfigureSubscription:getUrlFromDialog(dialog)
    local fields = dialog:getFields()
-   return fields[1]
+   return fields[EditDialog.URL]
+end
+
+function ConfigureSubscription:getDownloadDirectoryFromDialog(dialog)
+   local fields = dialog:getFields()
+   return fields[EditDialog.DOWNLOAD_DIRECTORY]
 end
 
 function ConfigureSubscription:getDownloadDirectory()

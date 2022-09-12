@@ -8,6 +8,9 @@ local EditDialog = {
 
 }
 
+EditDialog.URL = 1
+EditDialog.DOWNLOAD_DIRECTORY = 2
+
 function EditDialog:newFeed(composer)
    local dialog
    local passed_test = false
@@ -41,7 +44,7 @@ function EditDialog:newFeed(composer)
                         passed_test, new_subscription = composer:testFeed(dialog)
                         if passed_test
                         then
-                           composer:updateSubscription(new_subscription)
+                           composer:updateSubscriptionFromTest(new_subscription)
                         end
                   end)
                end
@@ -66,6 +69,7 @@ function EditDialog:newFeed(composer)
                         then
                            Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
                         else
+                           composer:updateFromDialog(dialog)
                            composer:saveSubscription()
                            self:close(dialog)
                         end
@@ -116,7 +120,7 @@ function EditDialog:editFeed(composer, subscription)
                            -- history in the stored subscription, it'll be overwritten. So this
                            -- could actually cause a dissonance between what the user has or hasn't read.
                            -- Better would be to just update the subscription with the changed fields.
-                           subscription = composer:updateSubscription(new_subscription)
+                           composer:updateSubscriptionFromTest(new_subscription)
                         end
                   end)
                end
@@ -153,6 +157,7 @@ function EditDialog:editFeed(composer, subscription)
                         then
                            Trapper:info(GazetteMessages.CONFIGURE_SUBSCRIPTION_FEED_NOT_TESTED)
                         else
+                           composer:updateFromDialog(dialog)
                            composer:saveSubscription()
                            self:close(dialog)
                         end

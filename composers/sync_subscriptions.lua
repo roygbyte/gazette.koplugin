@@ -32,7 +32,6 @@ function SyncSubscriptions:results(results)
             subscription_result.title,
             subscription_result.description,
             callback = function()
-               -- SyncSubscriptions:singleResult(subscription_result.entry_results)
                require("logger").dbg(subscription_result.entry_results)
             end
       })
