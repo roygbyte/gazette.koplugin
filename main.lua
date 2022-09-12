@@ -35,18 +35,21 @@ function Gazette:getSubMenuItems()
    return {
       {
          text = GazetteMessages.MENU_SYNC,
+         keep_menu_open = true,
          callback = function()
             self:syncSubscriptions()
          end
       },
       {
          text = GazetteMessages.MENU_MANAGE_SUBSCRIPTIONS,
+         keep_menu_open = true,
          callback = function()
             self:viewSubscriptions()
          end
       },
       {
          text = GazetteMessages.MENU_SETTINGS,
+         keep_menu_open = true,
          sub_item_table = self:getConfigureSubMenuItems()
       }
    }
