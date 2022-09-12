@@ -9,12 +9,15 @@ describe("Subscription", function()
             Subscriptions = require("subscription/subscriptions")
             FeedSubscription = require("subscription/type/feed")
             SubscriptionFactory = require("subscription/subscriptionfactory")
+            Results = require("subscription/result/results")
             State = require("subscription/state")
             logger = require("logger")
             our_world_in_data_feed = "https://ourworldindata.org/atom.xml"
+            valid_download_directory = "/home/scarlett/epubs/"
       end)
       teardown(function()
-            -- State:deleteConfig()
+            State.deleteConfig(State.DATA_STORAGE_DIR, State.STATE_FILE)
+            State.deleteConfig(State.DATA_STORAGE_DIR, "gazette_results.lua")
       end)
       describe("Subscription", function()
             it("should generate a unique ID for each new subscription", function()
@@ -53,6 +56,7 @@ describe("Subscription", function()
             it("should create and save a new feed subscription", function()
                   local subscription = FeedSubscription:new()
                   subscription.url = our_world_in_data_feed
+                  subscription.download_directory = valid_download_directory
                   subscription:sync()
                   local ok, err = subscription:save(subscription)
                   feed_subscription_id = subscription.id
@@ -91,6 +95,7 @@ describe("Subscription", function()
                      url = "https://ourworldindata.org"
                   }
                   local subscription = SubscriptionFactory:makeFeed(configuration)
+                  subscription.download_directory = valid_download_directory
                   subscription:sync()
                   subscription:save()
                   print(subscription.id)
@@ -104,15 +109,39 @@ describe("Subscription", function()
                      assert.are.same("Our World in Data", subscription.feed.title)
                   end
             end)
+            it("should return a limited number of subscriptions when told to do so", function()
+                  local subscriptions = Subscriptions.all()
+
+                  for _, subscription in pairs(subscriptions) do
+                     assert.are.same(subscription.limit, #subscription:getAllEntries(subscription.limit))
+                  end
+            end)
             it("should sync all subscriptions", function()
-                  local subscriptions = Subscriptions:sync(
-                     function(update)
-                        print(update)
-                     end,
-                     function(result)
-                        require("logger").dbg(result)
+                  Subscriptions:sync(
+                     function(update) end,
+                     function(results)
+                        for _, subscription_result in pairs(results) do
+                           local subscription = FeedSubscription:new({
+                                 id = subscription_result.id
+                           })
+                           assert.are.same(subscription.limit,  subscription_result:getResultCount())
+                        end
                      end
                   )
+            end)
+            it("should not redownload subscriptions", function()
+                  Subscriptions:sync(
+                     function(update) end,
+                     function(results)
+                        assert.are.same({}, results)
+                     end
+                  )
+            end)
+      end)
+      describe("Results", function()
+            it("should get previous sync results", function()
+                  local results = Results.all()
+                  -- require("logger").dbg(results)
             end)
       end)
 end)
