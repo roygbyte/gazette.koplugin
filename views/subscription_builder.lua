@@ -4,6 +4,7 @@ local EpubBuildDirector = require("libs/gazette/epubbuilddirector")
 local WebPage = require("libs/gazette/resources/webpage")
 local ResourceAdapter = require("libs/gazette/resources/webpageadapter")
 local Epub = require("libs/gazette/epub/epub")
+local ResultFactory = require("subscription/result/resultfactory")
 
 local SubscriptionBuilder = {
 
@@ -19,12 +20,10 @@ end
 function SubscriptionBuilder:buildSingleEntry(subscription, entry)
 
    local builder = SubscriptionBuilder:new()
-
    local webpage, err = builder:createWebpage(entry)
    if not webpage
    then
-      print(err)
-      return false, err
+      return ResultFactory:makeResult(entry):setError(err)
    end
 
    local epub = Epub:new{}
@@ -33,20 +32,22 @@ function SubscriptionBuilder:buildSingleEntry(subscription, entry)
       entry:getTitle()
    )
 
-   local output_dir = "/home/scarlett/"
+   local output_dir = subscription:getDownloadDirectory()
    local epub_title = entry:getTitle()
    local epub_path = output_dir .. util.getSafeFilename(epub_title) .. ".epub"
-   print(epub_path)
-   print(subscription:getDownloadDirectory())
    local build_director, err = builder:createBuildDirector(epub_path)
    if not build_director
    then
-      print(err)
-      return false, err
+      return ResultFactory:makeResult(entry):setError(err)
    end
 
    local ok, err = build_director:construct(epub)
+   if not ok
+   then
+      return ResultFactory:makeResult(entry):setError(err)
+   end
 
+   return ResultFactory:makeResult(entry):setSuccess()
 end
 
 function SubscriptionBuilder:createWebpage(entry)
@@ -56,7 +57,7 @@ function SubscriptionBuilder:createWebpage(entry)
 
    if err
    then
-      return false
+      return false, err
    end
 
    local success, err = webpage:build()
