@@ -19,7 +19,7 @@ function State:new(o)
 end
 
 function State:init()
-   self.lua_settings = LuaSettings:open(("%s/%s"):format(State.DATA_STORAGE_DIR, State.STATE_FILE))
+   self.lua_settings = LuaSettings:open(("%s/%s"):format(self.DATA_STORAGE_DIR, self.STATE_FILE))
 
    if not self.lua_settings
    then
@@ -62,7 +62,7 @@ end
 
 function State:generateUniqueId(maybe_id)
    maybe_id = maybe_id or 1
-   local maybe_key = State.ID_PREFIX .. tostring(maybe_id)
+   local maybe_key = self.ID_PREFIX .. tostring(maybe_id)
 
    if not self.lua_settings:has(maybe_key)
    then
@@ -72,8 +72,8 @@ function State:generateUniqueId(maybe_id)
    return self:generateUniqueId(maybe_id + 1)
 end
 
-function State.deleteConfig()
-   os.remove(("%s/%s"):format(State.DATA_STORAGE_DIR, State.STATE_FILE))
+function State.deleteConfig(dir, filename)
+   os.remove(("%s/%s"):format(dir, filename))
 end
 
 return State
