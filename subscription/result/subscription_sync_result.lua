@@ -13,14 +13,22 @@ function SubscriptionSyncResult:new(o)
    setmetatable(o, self)
    self.__index = self
 
-   -- This should try and load existing results... like subscription, really
-   -- o:_init()
-   if o.results == nil
-   then
-      o.results = {}
-   end
+   o:_init(o)
+   o = o:load()
 
    return o
+end
+
+function SubscriptionSyncResult:_init(o)
+   self.results = o.results
+   self.id = o.id
+end
+
+function SubscriptionSyncResult:save()
+   self.subscription = nil
+
+   self.lua_settings:saveSetting(self.id, self)
+   self.lua_settings:flush()
 end
 
 function SubscriptionSyncResult:add(result)
@@ -32,13 +40,16 @@ function SubscriptionSyncResult:initializeResults()
    if self.results == nil or
       type(self.results) ~= "table"
    then
+      -- Initialize results anew.
+      self.results = {}
       return false
    end
 
    local initialized_results = {}
 
    for id, data in pairs(self.results) do
-      initialized_results[id] = ResultFactory:makeResult(data)
+      local result = ResultFactory:makeResult(data)
+      initialized_results[id] = result
    end
 
    self.results = initialized_results
@@ -54,6 +65,10 @@ function SubscriptionSyncResult:hasEntry(entry)
    else
       return false
    end
+end
+
+function SubscriptionSyncResult:getEntryResults()
+   return self.results
 end
 
 function SubscriptionSyncResult:totalSuccesses()
@@ -73,6 +88,43 @@ function SubscriptionSyncResult:getResultCount()
       count = count + 1
    end
    return count
+end
+
+function SubscriptionSyncResult:getOverviewMessage()
+   return ("%s/%s"):format(self:totalSuccesses(), self:getResultCount())
+end
+
+function SubscriptionSyncResult:initializeSubscription()
+   local subscription = Subscription:new({id = self.id})
+   if not self.subscription and
+      subscription
+   then
+      self.subscription = subscription
+      return true
+   elseif self.subscription ~= nil
+   then
+      return true
+   else
+      return false
+   end
+end
+
+function SubscriptionSyncResult:getSubscriptionTitle()
+   if self:initializeSubscription()
+   then
+      return self.subscription:getTitle()
+   else
+      return "No"
+   end
+end
+
+function SubscriptionSyncResult:getSubscriptionDescription()
+   if self:initializeSubscription()
+   then
+      return self.subscription:getDescription()
+   else
+      return "No"
+   end
 end
 
 return SubscriptionSyncResult
