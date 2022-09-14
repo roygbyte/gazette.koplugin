@@ -5,6 +5,7 @@ local GazetteMessages = require("gazettemessages")
 local Subscriptions = require("subscription/subscriptions")
 local ConfigureSubscription = require("composers/configure_subscription")
 local SubscriptionActionDialog = require("composers/subscription_action_dialog")
+
 local ViewSubscriptions = {}
 
 function ViewSubscriptions:list()
@@ -45,6 +46,19 @@ end
 function ViewSubscriptions:refresh()
    UIManager:close(self.view)
    ViewSubscriptions:list()
+end
+
+function ViewSubscriptions:goToDownloadDirectory(subscription)
+   local FileManager = require("apps/filemanager/filemanager")
+   if self.view
+   then
+      UIManager:close(self.view)
+   end
+   if FileManager.instance then
+      FileManager.instance:reinit(subscription:getDownloadDirectory())
+   else
+      FileManager:showFiles(subscription:getDownloadDirectory())
+   end
 end
 
 return ViewSubscriptions
