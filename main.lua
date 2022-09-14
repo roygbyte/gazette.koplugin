@@ -12,6 +12,7 @@ local GazetteMessages = require("gazettemessages")
 local ConfigureSubscription = require("composers/configure_subscription")
 local ViewSubscriptions = require("composers/view_subscriptions")
 local SyncSubscriptions = require("composers/sync_subscriptions")
+local ViewResults = require("composers/view_results")
 
 local Gazette = WidgetContainer:new{
     name = "gazette",
@@ -39,6 +40,14 @@ function Gazette:getSubMenuItems()
          callback = function()
             self:syncSubscriptions()
          end
+      },
+      {
+         text = GazetteMessages.MENU_LIST_PREVIOUS_RESULTS,
+         keep_menu_open = true,
+         callback = function()
+            self:viewResults()
+         end,
+         separator = true
       },
       {
          text = GazetteMessages.MENU_MANAGE_SUBSCRIPTIONS,
@@ -72,6 +81,10 @@ end
 
 function Gazette:viewSubscriptions()
    ViewSubscriptions:list()
+end
+
+function Gazette:viewResults()
+   ViewResults:listAll()
 end
 
 return Gazette
