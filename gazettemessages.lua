@@ -5,6 +5,7 @@ local GazetteMessages = {
 }
 
 GazetteMessages.MENU_SYNC = _("Sync")
+GazetteMessages.MENU_LIST_PREVIOUS_RESULTS = _("View last sync results")
 GazetteMessages.MENU_MANAGE_SUBSCRIPTIONS = _("Manage subscriptions")
 GazetteMessages.MENU_SETTINGS = _("Settings")
 
@@ -12,6 +13,12 @@ GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_EDIT = _("Edit")
 GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_DELETE = _("Delete")
 
 GazetteMessages.VIEW_SUBSCRIPTIONS_LIST = _("Subscriptions")
+GazetteMessages.VIEW_RESULTS_LIST = _("Sync Results")
+GazetteMessages.VIEW_RESULTS_SUBSCRIPTION_TITLE = _("Sync Results: %1")
+GazetteMessages.RESULT_EXPAND_INFO = _("%1: %2 \n%3")
+GazetteMessages.RESULT_ALREADY_DOWNLOADED = _("Already downloaded")
+GazetteMessages.RESULT_SUCCESS = _("Success")
+GazetteMessages.RESULT_ERROR = _("Error")
 
 GazetteMessages.ERROR_FEED_FETCH = _("Error fetching feed.")
 GazetteMessages.ERROR_ENTRY_FETCH = _("Error fetching entry.")

@@ -30,4 +30,26 @@ function Result:isSuccessful()
    return self.success
 end
 
+function Result:getStatus()
+   if self:isSuccessful()
+   then
+      return GazetteMessages.RESULT_SUCCESS
+   else
+      return GazetteMessages.RESULT_ERROR
+   end
+end
+
+function Result:getStatusMessage()
+   if self:isSuccessful()
+   then
+      return GazetteMessages.RESULT_SUCCESS
+   else
+      return self.error_message
+   end
+end
+
+function Result:getIdentifier()
+   return self.id
+end
+
 return Result
