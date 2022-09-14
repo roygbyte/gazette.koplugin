@@ -45,6 +45,7 @@ end
 
 function Feed:save()
    self.feed.xml = nil
+   self.feed.entries = nil
    -- This is pulled from State:save(). I wanted to call this
    -- through the same getmetatable magic used in _init... but
    -- it "didn't work".
