@@ -58,7 +58,7 @@ function Subscriptions:sync(progress_callback, finished_callback)
 
       for _, entry in pairs(subscription:getNewEntries(subscription.limit)) do
          progress_callback(subscription:getTitle() .. ": " .. entry:getTitle())
-         local entry_result, err = SubscriptionBuilder:buildSingleEntry(subscription, entry)
+         local entry_result = SubscriptionBuilder:buildSingleEntry(subscription, entry)
          subscription_results:add(entry_result)
       end
 
