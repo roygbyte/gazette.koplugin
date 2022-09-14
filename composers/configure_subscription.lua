@@ -72,6 +72,7 @@ end
 function ConfigureSubscription:updateFromDialog(dialog)
    self.subscription.download_directory = self:getDownloadDirectoryFromDialog(dialog)
    self.subscription.url = self:getUrlFromDialog(dialog)
+   self.subscription.limit = tonumber(self:getLimitFromDialog(dialog))
 end
 
 function ConfigureSubscription:hasUrlChanged(dialog)
@@ -115,6 +116,11 @@ end
 function ConfigureSubscription:getDownloadDirectoryFromDialog(dialog)
    local fields = dialog:getFields()
    return fields[EditDialog.DOWNLOAD_DIRECTORY]
+end
+
+function ConfigureSubscription:getLimitFromDialog(dialog)
+   local fields = dialog:getFields()
+   return fields[EditDialog.LIMIT]
 end
 
 function ConfigureSubscription:getDownloadDirectory()

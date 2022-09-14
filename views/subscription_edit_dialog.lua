@@ -10,6 +10,7 @@ local EditDialog = {
 
 EditDialog.URL = 1
 EditDialog.DOWNLOAD_DIRECTORY = 2
+EditDialog.LIMIT = 3
 
 function EditDialog:newFeed(composer)
    local dialog
@@ -25,6 +26,10 @@ function EditDialog:newFeed(composer)
          {
             description = _("Download directory"),
             text = composer:getDownloadDirectory()
+         },
+         {
+            description = _("Limit"),
+            text = tostring(subscription.limit)
          },
       },
       buttons = {
@@ -95,6 +100,10 @@ function EditDialog:editFeed(composer, subscription)
          {
             description = _("Download Directory"),
             text = subscription:getDownloadDirectory()
+         },
+         {
+            description = _("Limit"),
+            text = tostring(subscription.limit)
          },
       },
       buttons = {
