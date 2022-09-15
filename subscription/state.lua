@@ -8,7 +8,7 @@ local State  = {
 
 State.STATE_FILE = "gazette_subscription_config.lua"
 State.ID_PREFIX = "subscription_"
-State.DATA_STORAGE_DIR = "/home/scarlett" -- print(DataStorage:getSettingsDir())
+State.DATA_STORAGE_DIR = DataStorage:getSettingsDir()
 
 function State:new(o)
    o = o or {}
