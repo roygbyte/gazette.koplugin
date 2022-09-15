@@ -14,7 +14,7 @@ local ConfigureSubscription = {
 
 function ConfigureSubscription:newFeed(callback)
    self.subscription = SubscriptionFactory:makeFeed({})
-   local dialog = EditDialog:newFeed(self, self.subscription)
+   local dialog = EditDialog:newFeed(self)
    dialog.callback = function()
       callback(self.subscription)
    end
@@ -125,6 +125,10 @@ end
 
 function ConfigureSubscription:getDownloadDirectory()
    return self.subscription:getDownloadDirectory()
+end
+
+function ConfigureSubscription:getLimit()
+   return tostring(self.subscription.limit)
 end
 
 function ConfigureSubscription:createFeedFromDialog(dialog)

@@ -29,7 +29,7 @@ function EditDialog:newFeed(composer)
          },
          {
             description = _("Limit"),
-            text = tostring(subscription.limit)
+            text = composer:getLimit()
          },
       },
       buttons = {
@@ -103,7 +103,7 @@ function EditDialog:editFeed(composer, subscription)
          },
          {
             description = _("Limit"),
-            text = tostring(subscription.limit)
+            text = composer:getLimit()
          },
       },
       buttons = {
