@@ -5,8 +5,9 @@ local State = require("subscription/state")
 local SubscriptionSyncResult = require("subscription/result/subscription_sync_result")
 local ResultsFactory = require("subscription/result/resultsfactory")
 
-local Results = {
-   lua_settings = nil
+local Results = State:new{
+   lua_settings = nil,
+   STATE_FILE = SubscriptionSyncResult.STATE_FILE,
 }
 
 function Results:new(o)
@@ -15,15 +16,6 @@ function Results:new(o)
    self.__index = self
    o:init()
    return o
-end
-
-function Results:init()
-   self.lua_settings = LuaSettings:open(("%s/%s"):format(State.DATA_STORAGE_DIR, SubscriptionSyncResult.STATE_FILE))
-
-   if not self.lua_settings
-   then
-      return false
-   end
 end
 
 function Results:all()
@@ -44,13 +36,20 @@ end
 
 function Results.forFeed(id)
    local results = Results.all()
-   if results[id] and
-      type(results[id]) == "table"
-   then
-      return results[id]
-   else
-      return false
+
+   for _, subscription_sync_results in pairs(results) do
+      if subscription_sync_results.subscription_id == id and
+         type(subscription_sync_results) == "table"
+      then
+         return subscription_sync_results
+      end
    end
+
+   return false
+end
+
+function Results.getMostRecentForSubscription(subscription_id)
+
 end
 
 return Results
