@@ -22,6 +22,8 @@ GazetteMessages.RESULT_ERROR = _("Error")
 
 GazetteMessages.ERROR_FEED_FETCH = _("Error fetching feed.")
 GazetteMessages.ERROR_ENTRY_FETCH = _("Error fetching entry.")
+GazetteMessages.ERROR_FEED_NOT_SYNCED = _("Feed must be synced before accessing entries")
+
 GazetteMessages.UNTITLED_FEED = _("Untitled feed")
 GazetteMessages.DEFAULT_NAV_TITLE = _("Table of Contents")
 

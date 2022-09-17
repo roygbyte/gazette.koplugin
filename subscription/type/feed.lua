@@ -2,7 +2,7 @@ local Subscription = require("subscription/subscription")
 local FeedFactory = require("feed/feedfactory")
 local socket_url = require("socket.url")
 local DataStorage = require("datastorage")
-
+local GazetteMessages = require("gazettemessages")
 local Results = require("subscription/result/results")
 
 local Feed = Subscription:new{
@@ -109,6 +109,11 @@ function Feed:setTitle(title)
 end
 
 function Feed:getAllEntries(limit)
+   if not self.feed.entries
+   then
+      return false, GazetteMessages.ERROR_FEED_NOT_SYNCED
+   end
+
    if limit == nil or
       type(limit) ~= "number" or
       (type(limit) == "number" and limit == -1)
@@ -117,6 +122,7 @@ function Feed:getAllEntries(limit)
    else
       local limited_entries = {}
       local count = 0
+
       for _, entry in pairs(self.feed.entries) do
          table.insert(limited_entries, entry)
          count = count + 1
@@ -131,6 +137,8 @@ end
 
 function Feed:getNewEntries(limit)
    local results = Results.forFeed(self.id)
+   -- Need to adjust this so results returns a list of all the results.
+   -- each time we sync, there's gonna be a new sub sync result.
    local all_entries = self:getAllEntries(limit)
    local new_entries = {}
 
