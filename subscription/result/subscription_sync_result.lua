@@ -5,7 +5,10 @@ local ResultFactory = require("subscription/result/resultfactory")
 
 local SubscriptionSyncResult = State:new{
    STATE_FILE = "gazette_results.lua",
-   results = nil
+   ID_PREFIX = "result_",
+   subscription_id = nil,
+   results = nil,
+   timestamp = nil
 }
 
 function SubscriptionSyncResult:new(o)
@@ -22,13 +25,8 @@ end
 function SubscriptionSyncResult:_init(o)
    self.results = o.results
    self.id = o.id
-end
-
-function SubscriptionSyncResult:save()
-   self.subscription = nil
-
-   self.lua_settings:saveSetting(self.id, self)
-   self.lua_settings:flush()
+   self.subscription_id = o.subscription_id
+   self.timestamp = o.timestamp
 end
 
 function SubscriptionSyncResult:add(result)
