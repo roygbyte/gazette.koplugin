@@ -72,8 +72,9 @@ function State:generateUniqueId(maybe_id)
    return self:generateUniqueId(maybe_id + 1)
 end
 
-function State.deleteConfig(dir, filename)
+function State:deleteConfig(dir, filename)
    os.remove(("%s/%s"):format(dir, filename))
+   os.remove(("%s/%s.old"):format(dir, filename))
 end
 
 return State
