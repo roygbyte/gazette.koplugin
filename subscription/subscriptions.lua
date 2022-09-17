@@ -6,7 +6,7 @@ local SubscriptionBuilder = require("views/subscription_builder")
 local State = require("subscription/state")
 local ResultsFactory = require("subscription/result/resultsfactory")
 
-local Subscriptions = {
+local Subscriptions = State:new{
    lua_settings = nil
 }
 
@@ -16,15 +16,6 @@ function Subscriptions:new(o)
    self.__index = self
    o:init()
    return o
-end
-
-function Subscriptions:init()
-   self.lua_settings = LuaSettings:open(("%s/%s"):format(State.DATA_STORAGE_DIR, State.STATE_FILE))
-
-   if not self.lua_settings
-   then
-      return false
-   end
 end
 
 function Subscriptions:all()
@@ -51,10 +42,14 @@ function Subscriptions:sync(progress_callback, finished_callback)
    local initialized_subscriptions = Subscriptions.all()
    local sync_results = {}
 
+
+   local timestamp = os.date()
+
    for id, subscription in pairs(initialized_subscriptions) do
       subscription:sync()
 
       local subscription_results = ResultsFactory:makeResults(subscription)
+      subscription_results.timestamp = timestamp
 
       for _, entry in pairs(subscription:getNewEntries(subscription.limit)) do
          progress_callback(subscription:getTitle() .. ": " .. entry:getTitle())
