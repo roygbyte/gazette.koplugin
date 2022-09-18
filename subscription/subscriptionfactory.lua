@@ -11,9 +11,7 @@ SubscriptionFactory.SUBSCRIPTION_TYPES = {
 
 function SubscriptionFactory:makeFeed(configuration)
    -- If a feed exists with the ID, it will be loaded.
-   local feed = FeedSubscription:new({
-         id = configuration.id
-   })
+   local feed = FeedSubscription:new(configuration)
    -- If the feed wasn't loaded, there'll be no URL in the object.
    -- Likely, we're making a new subscription.
    if not feed.url
