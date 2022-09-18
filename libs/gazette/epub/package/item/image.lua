@@ -39,10 +39,6 @@ function Image:new(o)
    return o
 end
 
-function Image:getContent()
-    return self.content
-end
-
 function Image:fetchContent(data_source)
 
 end

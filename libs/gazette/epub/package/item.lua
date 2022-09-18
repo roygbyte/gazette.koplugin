@@ -76,7 +76,12 @@ function Item:getNavPart()
 end
 
 function Item:getContent()
-    return self.content
+    if type(self.content) == "string"
+    then
+        return self.content
+    else
+        return false
+    end
 end
 
 return Item
