@@ -29,7 +29,7 @@ function SubscriptionFactory:makeFeed(configuration)
       }
    end
 
-   if not feed.feed and configuration.feed
+   if not feed.feed or configuration.feed
    then
       feed.feed = Feed:new(configuration.feed) or nil
    end
