@@ -1,4 +1,4 @@
-local GazetteMessage = require("gazettemessages")
+local GazetteMessages = require("gazettemessages")
 
 local Result = {
    id = nil,
