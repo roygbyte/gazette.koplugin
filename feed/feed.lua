@@ -30,7 +30,7 @@ function Feed:getPermalink()
 end
 
 function Feed:getUpdated()
-    return self.pubDate or self.updated
+    return self.pubDate or self.updated or "n/a"
 end
 
 function Feed:getLogo()

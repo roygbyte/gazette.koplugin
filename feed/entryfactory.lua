@@ -9,7 +9,7 @@ local EntryFactory = {
 function EntryFactory:makeAtom(entryAsXml)
     local authors = nil
 
-    if #entryAsXml.author > 0
+    if entryAsXml.author and #entryAsXml.author > 0
     then
         authors = ""
         for index, author in ipairs(entryAsXml.author) do

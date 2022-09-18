@@ -22,7 +22,7 @@ function Entry:getSummary()
 end
 
 function Entry:getPublished()
-   return self.pubDate or self.published
+   return self.pubDate or self.published or self.updated
 end
 
 function Entry:getId()
