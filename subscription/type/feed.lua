@@ -30,7 +30,7 @@ end
 function Feed:_init(o)
    -- Call the superclass' init function to apply those values to the
    -- current object.
-   getmetatable(self):_init(o)
+   -- getmetatable(o):_init(o)
 
    self.subscription_type = Feed.subscription_type
    self.url = o.url
