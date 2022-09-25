@@ -42,8 +42,7 @@ function Results.forFeed(id)
    }
 
    for _, subscription_sync_results in pairs(results) do
-      if subscription_sync_results.subscription_id == id and
-         type(subscription_sync_results) == "table"
+      if subscription_sync_results.subscription_id == id
       then
          table.insert(collected_results["result"], subscription_sync_results)
       end
