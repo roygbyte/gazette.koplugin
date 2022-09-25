@@ -1,4 +1,5 @@
 local UIManager = require("ui/uimanager")
+local NetworkMgr = require("ui/network/manager")
 local EditDialog = require("views/subscription_edit_dialog")
 local SubscriptionFactory = require("subscription/subscriptionfactory")
 local FeedSubscription = require("subscription/type/feed")
@@ -13,23 +14,29 @@ local ConfigureSubscription = {
 }
 
 function ConfigureSubscription:newFeed(callback)
-   self.subscription = SubscriptionFactory:makeFeed({})
-   local dialog = EditDialog:newFeed(self)
-   dialog.callback = function()
-      callback(self.subscription)
-   end
+   NetworkMgr:runWhenOnline(function()
+         self.subscription = SubscriptionFactory:makeFeed({})
+         local dialog = EditDialog:newFeed(self)
+         dialog.callback = function()
+            callback(self.subscription)
+            NetworkMgr:afterWifiAction()
+         end
 
-   UIManager:show(dialog)
+         UIManager:show(dialog)
+   end)
 end
 
 function ConfigureSubscription:editFeed(subscription, callback)
-   self.subscription = subscription
-   local dialog = EditDialog:editFeed(self, self.subscription)
-   dialog.callback = function()
-      callback(self.subscription)
-   end
+   NetworkMgr:runWhenOnline(function()
+         self.subscription = subscription
+         local dialog = EditDialog:editFeed(self, self.subscription)
+         dialog.callback = function()
+            callback(self.subscription)
+            NetworkMgr:afterWifiAction()
+         end
 
-   UIManager:show(dialog)
+         UIManager:show(dialog)
+   end)
 end
 
 function ConfigureSubscription:testFeed(dialog)
