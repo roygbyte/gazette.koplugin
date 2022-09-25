@@ -37,15 +37,26 @@ end
 function Results.forFeed(id)
    local results = Results.all()
 
+   local collected_results = {
+      result = {}
+   }
+
    for _, subscription_sync_results in pairs(results) do
       if subscription_sync_results.subscription_id == id and
          type(subscription_sync_results) == "table"
       then
-         return subscription_sync_results
+         table.insert(collected_results["result"], subscription_sync_results)
       end
    end
 
-   return false
+   collected_results.hasEntry = function(self, entry)
+      for _, results in ipairs(self.result) do
+         return results:hasEntry(entry)
+      end
+      return false
+   end
+
+   return collected_results
 end
 
 function Results.getMostRecentForSubscription(subscription_id)
