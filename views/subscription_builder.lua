@@ -34,7 +34,7 @@ function SubscriptionBuilder:buildSingleEntry(subscription, entry)
 
    local output_dir = subscription:getDownloadDirectory()
    local epub_title = entry:getTitle()
-   local epub_path = output_dir .. util.getSafeFilename(epub_title) .. ".epub"
+   local epub_path = ("%s/%s.epub"):format(output_dir, util.getSafeFilename(epub_title))
    local build_director, err = builder:createBuildDirector(epub_path)
    if not build_director
    then
