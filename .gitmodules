@@ -1,0 +1,3 @@
+[submodule "libs/gazette"]
+	path = libs/gazette
+	url = git@github.com:roygbyte/gazette.git
