@@ -177,9 +177,14 @@ end
 function Feed:getDownloadDirectory()
    if self.download_directory
    then
-      return self.download_directory
+      if string.sub(self.download_directory, #self.download_directory) == '/'
+      then
+         return string.sub(self.download_directory, 0, #self.download_directory - 1)
+      else
+         return self.download_directory
+      end
    else
-      return DataStorage:getDataDir() .. "/news/"
+      return DataStorage:getDataDir() .. "/news"
    end
 end
 
