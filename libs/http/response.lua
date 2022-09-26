@@ -129,8 +129,8 @@ function Response:setUrlFromHeaders()
 end
 
 function Response:decodeXml(xml_to_decode)
-    local xml2lua = require("libs/xml2lua/xml2lua")
-    local handler = require("libs/xml2lua/xmlhandler.tree"):new()
+    local xml2lua = require("../libs/xml2lua/xml2lua")
+    local handler = require("../libs/xml2lua/xmlhandler.tree"):new()
     local parser = xml2lua.parser(handler)
 
     local ok, error_message = pcall(function()
