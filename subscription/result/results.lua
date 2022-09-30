@@ -46,23 +46,31 @@ function Results.forFeed(id)
       end
    end
 
-   return {
-      hasEntry = function(self, entry)
-         local has_entry = false
-         for _, results in ipairs(collected_results) do
-            if results:hasEntry(entry)
-            then
-               has_entry = true
-               ::continue::
-            end
+   collected_results.hasEntry = function(self, entry)
+      local has_entry = false
+      for _, results in ipairs(collected_results) do
+         if results:hasEntry(entry)
+         then
+            has_entry = true
+            ::continue::
          end
-         return has_entry
       end
-   }
+      return has_entry
+   end
+
+   return collected_results
 end
 
 function Results.getMostRecentForSubscription(subscription_id)
 
+end
+
+function Results.deleteForSubscription(subscription_id)
+   local results = Results.forFeed(subscription_id)
+
+   for _, subscription_sync_results in ipairs(results) do
+      subscription_sync_results:delete()
+   end
 end
 
 return Results

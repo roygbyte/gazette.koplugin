@@ -141,7 +141,22 @@ describe("Subscription", function()
       describe("Results", function()
             it("should get previous sync results", function()
                   local results = Results.all()
-                  -- require("logger").dbg(results)
+                  local result_count = 0
+
+                  for _, subscription_result in pairs(results) do
+                     result_count = result_count + 1
+                  end
+
+                  assert.are.same(4, result_count)
             end)
+            it("should delete previous sync results", function()
+                  local subscription_id = feed_subscription_id
+                  local results = Results.deleteForSubscription(subscription_id)
+                  assert.are.same(0, #Results.forFeed(subscription_id))
+            end)
+      end)
+      teardown(function()
+            State:deleteConfig(State.DATA_STORAGE_DIR, State.STATE_FILE)
+            State:deleteConfig(State.DATA_STORAGE_DIR, "gazette_results.lua")
       end)
 end)
