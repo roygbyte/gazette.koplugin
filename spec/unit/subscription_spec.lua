@@ -81,38 +81,55 @@ describe("Subscription", function()
                   })
                   assert.are.same(FeedSubscription.limit, subscription.limit)
             end)
+            it("should remove trailing slash from download directory", function()
+                  local subscription = FeedSubscription:new({
+                        id = feed_subscription_id
+                  })
+                  subscription:setDownloadDirectory("./news/")
+                  assert.are.same("./news", subscription:getDownloadDirectory())
+            end)
             it("should indicate the correct type of subscription", function()
                   local subscription = FeedSubscription:new({
                         id = feed_subscription_id
                   })
                   assert.are.same(FeedSubscription.subscription_type, subscription.subscription_type)
             end)
-            -- Find and create the right type of subscription from the history file.
+            it("should not include values from previous object", function()
+                  local subscription = FeedSubscription:new({
+                        url = our_world_in_data_feed
+                  })
+                  assert.are_not.same(feed_subscription_id, subscription.id)
+            end)
       end)
       describe("SubscriptionFactory", function()
             it("should create a new subscription", function()
                   local configuration = {
-                     url = "https://ourworldindata.org"
+                     url = "https://takeonrules.com/feed.xml"
                   }
                   local subscription = SubscriptionFactory:makeFeed(configuration)
                   subscription.download_directory = valid_download_directory
-                  subscription:sync()
+                  local success, err = subscription:sync()
                   subscription:save()
-                  print(subscription.id)
+                  assert.are.same("Take on Rules", subscription:getTitle())
+            end)
+            it("should return a blank subscription when passed empty config", function()
+                  local configuration = {}
+                  local subscription = SubscriptionFactory:makeFeed(configuration)
+                  assert.are.same(nil, subscription.id)
             end)
       end)
       describe("Subscriptions", function()
             it("should list all subscriptions", function()
                   local subscriptions = Subscriptions.all()
 
-                  for _, subscription in pairs(subscriptions) do
-                     assert.are.same("Our World in Data", subscription.feed.title)
-                  end
+                  assert.are.same("Our World in Data", subscriptions["subscription_1"].feed.title)
+                  assert.are.same("Take on Rules", subscriptions["subscription_3"].feed.title)
             end)
             it("should return a limited number of subscriptions when told to do so", function()
                   local subscriptions = Subscriptions.all()
 
                   for _, subscription in pairs(subscriptions) do
+                     subscription:sync()
                      assert.are.same(subscription.limit, #subscription:getAllEntries(subscription.limit))
                   end
             end)
