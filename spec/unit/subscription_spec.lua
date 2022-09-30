@@ -1,6 +1,7 @@
 describe("Subscription", function()
       local logger
-      local subscription_id_to_persist
+      local feed_subscription_id
+      local feed_entries_last_update
       setup(function()
             orig_path = package.path
             package.path = "plugins/gazette.koplugin/?.lua;" .. package.path
@@ -15,11 +16,8 @@ describe("Subscription", function()
             our_world_in_data_feed = "https://ourworldindata.org/atom.xml"
             valid_download_directory = "/home/scarlett/epubs/"
       end)
-      teardown(function()
-            State.deleteConfig(State.DATA_STORAGE_DIR, State.STATE_FILE)
-            State.deleteConfig(State.DATA_STORAGE_DIR, "gazette_results.lua")
-      end)
       describe("Subscription", function()
+            local subscription_id_to_persist
             it("should generate a unique ID for each new subscription", function()
                   local subscription_1 = Subscription:new()
                   subscription_1.url = our_world_in_data_feed
@@ -49,10 +47,12 @@ describe("Subscription", function()
                   })
                   assert.are.same(false, no_subscription)
             end)
+            teardown(function()
+                  State:deleteConfig(State.DATA_STORAGE_DIR, State.STATE_FILE)
+                  State:deleteConfig(State.DATA_STORAGE_DIR, "gazette_results.lua")
+            end)
       end)
       describe("FeedSubscription", function()
-            local feed_subscription_id
-            local feed_entries_last_update
             it("should create and save a new feed subscription", function()
                   local subscription = FeedSubscription:new()
                   subscription.url = our_world_in_data_feed
@@ -150,7 +150,9 @@ describe("Subscription", function()
                   Subscriptions:sync(
                      function(update) end,
                      function(results)
-                        assert.are.same({}, results)
+                        for _, result in pairs(results) do
+                           assert.are.same({}, result.results)
+                        end
                      end
                   )
             end)
