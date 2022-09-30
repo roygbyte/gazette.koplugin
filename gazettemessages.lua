@@ -11,6 +11,7 @@ GazetteMessages.MENU_SETTINGS = _("Settings")
 
 GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_EDIT = _("Edit")
 GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_DELETE = _("Delete")
+GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_CLEAR_RESULTS = _("Clear results")
 
 GazetteMessages.VIEW_SUBSCRIPTIONS_LIST = _("Subscriptions")
 GazetteMessages.VIEW_RESULTS_LIST = _("Sync Results")

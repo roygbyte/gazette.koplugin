@@ -3,6 +3,7 @@ local UIManager = require("ui/uimanager")
 
 local GazetteMessages = require("gazettemessages")
 local ConfigureSubscription = require("composers/configure_subscription")
+local Results = require("subscription/result/results")
 
 local SubscriptionActionDialog = {}
 
@@ -18,6 +19,16 @@ function SubscriptionActionDialog:show(subscription, on_close_callback)
                   ConfigureSubscription:editFeed(subscription, function()
                         on_close_callback()
                   end)
+               end,
+            },
+         },
+         {
+            {
+               text = GazetteMessages.SUBSCRIPTION_ACTION_DIALOG_CLEAR_RESULTS,
+               callback = function()
+                  UIManager:close(button_dialog)
+                  Results.deleteForSubscription(subscription.id)
+                  on_close_callback()
                end,
             },
          },
