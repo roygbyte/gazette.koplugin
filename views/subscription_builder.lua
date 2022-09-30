@@ -1,10 +1,13 @@
 local util = require("frontend/util")
+local T = require("ffi/util").template
 
 local EpubBuildDirector = require("libs/gazette/epubbuilddirector")
 local WebPage = require("libs/gazette/resources/webpage")
 local ResourceAdapter = require("libs/gazette/resources/webpageadapter")
 local Epub = require("libs/gazette/epub/epub")
 local ResultFactory = require("subscription/result/resultfactory")
+local Template = require("libs/gazette/resources/htmldocument/template")
+local Feed = require("subscription/type/feed")
 
 local SubscriptionBuilder = {
 
@@ -20,7 +23,7 @@ end
 function SubscriptionBuilder:buildSingleEntry(subscription, entry)
 
    local builder = SubscriptionBuilder:new()
-   local webpage, err = builder:createWebpage(entry)
+   local webpage, err = builder:createWebpage(subscription, entry)
    if not webpage
    then
       return ResultFactory:makeResult(entry):setError(err)
@@ -50,9 +53,20 @@ function SubscriptionBuilder:buildSingleEntry(subscription, entry)
    return ResultFactory:makeResult(entry):setSuccess()
 end
 
-function SubscriptionBuilder:createWebpage(entry)
+function SubscriptionBuilder:createWebpage(subscription, entry)
+   local html
+
+   if subscription:getContentSource() == Feed.CONTENT_SOURCE.CONTENT
+   then
+      html = Template.HTML:format(entry:getTitle(), entry:getTitle(), entry:getContent())
+   elseif subscription:getContentSource() == Feed.CONTENT_SOURCE.SUMMARY
+   then
+      html = Template.HTML:format(entry:getTitle(), entry:getTitle(), entry:getSummary())
+   end
+
    local webpage, err = WebPage:new({
-         url = entry:getPermalink()
+         url = entry:getPermalink(),
+         html = html,
    })
 
    if err
