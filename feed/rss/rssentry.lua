@@ -3,6 +3,7 @@ local Entry = require("feed/entry")
 local RssEntry = Entry:new {
     title = nil,
     description = nil,
+    content = nil,
     author = nil,
     pubDate = nil,
     link = nil

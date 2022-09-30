@@ -8,6 +8,7 @@ local AtomEntry = Entry:new {
         href = nil
     },
     summary = nil,
+    content = nil,
     authors = {
         name = nil
     },

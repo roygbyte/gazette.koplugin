@@ -29,6 +29,7 @@ function EntryFactory:makeAtom(entryAsXml)
                 rel = entryAsXml.link._attr.rel,
                 href = entryAsXml.link._attr.href,
             } or nil,
+        content = entryAsXml.content or entryAsXml["content:encoded"],
         summary = entryAsXml.summary,
         author = authors,
         title = entryAsXml.title,
@@ -40,6 +41,7 @@ function EntryFactory:makeRss(entryAsXml)
     return RssEntry:new{
         title = entryAsXml.title,
         description = entryAsXml.description,
+        content = entryAsXml.content or entryAsXml["content:encoded"],
         author = entryAsXml.author,
         pubDate = entryAsXml.pubDate,
         link = entryAsXml.link,

@@ -2,7 +2,7 @@ local RequestFactory = require("libs/http/requestfactory")
 local FeedError = require("feed/feederror")
 
 local Entry = {
-   content = nil
+
 }
 
 function Entry:new(o)
@@ -18,7 +18,15 @@ function Entry:getTitle()
 end
 
 function Entry:getSummary()
-   return self.summary or self.description
+   return self.description or self.summary
+end
+
+function Entry:getContent()
+    -- Some feeds may have a content tag, tho it's not guaranteed. Atom feeds have the option to include one.
+    -- RSS doesn't include any mention of one in its specification, but feeds include the tag anyways.
+    -- Anywho, if the content tag doesn't exist, fallback getSummary(), since some feeds store the content within
+    -- the description or summary tags.
+    return self.content or self:getSummary()
 end
 
 function Entry:getPublished()
@@ -55,10 +63,6 @@ end
 
 function Entry:getAuthor()
    return self.author
-end
-
-function Entry:getContent()
-    return self.content
 end
 
 return Entry
