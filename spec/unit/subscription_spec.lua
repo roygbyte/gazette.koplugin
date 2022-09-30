@@ -139,7 +139,7 @@ describe("Subscription", function()
                      function(results)
                         for _, subscription_result in pairs(results) do
                            local subscription = FeedSubscription:new({
-                                 id = subscription_result.id
+                                 id = subscription_result.subscription_id
                            })
                            assert.are.same(subscription.limit,  subscription_result:getResultCount())
                         end
