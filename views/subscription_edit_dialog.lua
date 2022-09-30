@@ -11,6 +11,7 @@ local EditDialog = {
 EditDialog.URL = 1
 EditDialog.DOWNLOAD_DIRECTORY = 2
 EditDialog.LIMIT = 3
+EditDialog.CONTENT_SOURCE = 4
 
 function EditDialog:newFeed(composer)
    local dialog
@@ -30,6 +31,10 @@ function EditDialog:newFeed(composer)
          {
             description = _("Limit"),
             text = composer:getLimit()
+         },
+         {
+            description = _("Content source"),
+            text = composer:getContentSource(),
          },
       },
       buttons = {
@@ -105,6 +110,10 @@ function EditDialog:editFeed(composer, subscription)
             description = _("Limit"),
             text = composer:getLimit()
          },
+         {
+            description = _("Content Source"),
+            text = composer:getContentSource()
+         },
       },
       buttons = {
          {
@@ -174,7 +183,7 @@ function EditDialog:editFeed(composer, subscription)
                end
             },
          },
-      },
+p      },
    }
    return dialog
 end
