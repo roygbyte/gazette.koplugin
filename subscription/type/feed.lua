@@ -5,15 +5,21 @@ local DataStorage = require("datastorage")
 local GazetteMessages = require("gazettemessages")
 local Results = require("subscription/result/results")
 
-local Feed = Subscription:new{
+Feed = Subscription:new{
    subscription_type = "feed",
    url = nil,
    limit = 3,
-   download_full_article = true,
-   include_images = false,
-   enabled_filter = false,
-   filter_element = nil,
+   include_images = false, -- not implemented
+   enabled_filter = false, -- not implemented
+   filter_element = nil, -- not implemented
    download_directory = nil,
+   content_source = nil,
+}
+
+Feed.CONTENT_SOURCE = {
+   SUMMARY = "summary",
+   CONTENT = "content",
+   WEBPAGE = "webpage",
 }
 
 function Feed:new(o)
@@ -35,10 +41,10 @@ function Feed:_init(o)
    self.subscription_type = Feed.subscription_type
    self.url = o.url
    self.limit = o.limit
-   self.download_full_article = o.download_full_article
+   self.download_full_article = o.download_full_article -- not implemented
    self.download_directory = o.download_directory
-   self.include_images = o.enabled_filter
-   self.filter_element = o.filter_element
+   self.include_images = o.enabled_filter -- not implemented
+   self.filter_element = o.filter_element -- not implemented
    -- self.feed isn't initialized here. Instead, it's initialized in the
    -- SubscriptionFactory.
 end
@@ -186,6 +192,10 @@ function Feed:getDownloadDirectory()
    else
       return DataStorage:getDataDir() .. "/news"
    end
+end
+
+function Feed:getContentSource()
+   return Feed.CONTENT_SOURCE[self.content_source] or Feed.CONTENT_SOURCE.CONTENT
 end
 
 return Feed
