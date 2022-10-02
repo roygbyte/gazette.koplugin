@@ -34,8 +34,17 @@ end
 
 function AtomFeed:initializeFeedFromXml(xml)
     local channel = xml.feed
+
+    if channel.title and
+        channel.title ~= "" and
+        type(channel.title) == "string"
+    then
+        self.title = util.htmlEntitiesToUtf8(channel.title)
+    else
+        self.title = T(GazetteMessages.UNTITLED_FEED, self.link)
+    end
+
     self.id = channel.id
-    self.title = util.htmlEntitiesToUtf8(channel.title or GazetteMessages.UNTITLED_FEED)
     self.subtitle = channel.subtitle
     self.updated = channel.updated
     self.author = channel.author ~= nil and {

@@ -25,7 +25,7 @@ GazetteMessages.ERROR_FEED_FETCH = _("Error fetching feed.")
 GazetteMessages.ERROR_ENTRY_FETCH = _("Error fetching entry.")
 GazetteMessages.ERROR_FEED_NOT_SYNCED = _("Feed must be synced before accessing entries")
 
-GazetteMessages.UNTITLED_FEED = _("Untitled feed")
+GazetteMessages.UNTITLED_FEED = _("Untitled feed (%s)")
 GazetteMessages.DEFAULT_NAV_TITLE = _("Table of Contents")
 
 GazetteMessages.CONFIGURE_SUBSCRIPTION_TEST_FEED_BEGIN = _("Testing feed...")

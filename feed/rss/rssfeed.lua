@@ -1,6 +1,7 @@
 local Feed = require("feed/feed")
 local EntryFactory = require("feed/entryfactory")
 local GazetteMessages = require("gazettemessages")
+local T = require("ffi/util").template
 local util = require("util")
 
 local RssFeed = Feed:new {
@@ -36,7 +37,16 @@ end
 
 function RssFeed:initializeFeedFromXml(xml)
     local channel = xml.rss.channel
-    self.title = util.htmlEntitiesToUtf8(channel.title or GazetteMessages.UNTITLED_FEED)
+
+    if channel.title and
+        channel.title ~= "" and
+        type(channel.title) == "string"
+    then
+        self.title = util.htmlEntitiesToUtf8(channel.title)
+    else
+        self.title = T(GazetteMessages.UNTITLED_FEED, channel.link)
+    end
+
     self.link = channel.link
     self.description = channel.description
     self.webMaster = channel.description
