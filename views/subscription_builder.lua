@@ -31,9 +31,8 @@ function SubscriptionBuilder:buildSingleEntry(subscription, entry)
 
    local epub = Epub:new{}
    epub:addFromList(ResourceAdapter:new(webpage))
-   epub:setTitle(
-      entry:getTitle()
-   )
+   epub:setTitle(entry:getTitle())
+   epub:setAuthor(subscription:getTitle())
 
    local output_dir = subscription:getDownloadDirectory()
    local epub_title = entry:getTitle()
