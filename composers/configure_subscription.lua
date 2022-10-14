@@ -1,3 +1,5 @@
+local util = require("frontend/util")
+
 local UIManager = require("ui/uimanager")
 local NetworkMgr = require("ui/network/manager")
 local EditDialog = require("views/subscription_edit_dialog")
@@ -101,6 +103,12 @@ function ConfigureSubscription:chooseDownloadDirectory(callback)
       onConfirm = function(path)
          -- Copy old dir to new dir?
          -- FFIUtil.copyFile(self.feed_config_path, ("%s/%s"):format(path, self.feed_config_file))
+         if self.subscription:getTitle()
+         then
+            local safe_title = util.getSafeFilename(self.subscription:getTitle())
+            path = string.format("%s/%s", path, safe_title)
+         end
+
          self.subscription:setDownloadDirectory(path)
          callback(path)
       end

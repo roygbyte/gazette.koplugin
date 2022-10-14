@@ -180,6 +180,10 @@ function Feed:setDescription(description)
 end
 
 function Feed:setDownloadDirectory(path)
+   if not util.pathExists(path)
+   then
+      util.makePath(path)
+   end
    self.download_directory = path
 end
 
