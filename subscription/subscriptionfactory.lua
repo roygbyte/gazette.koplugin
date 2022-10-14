@@ -24,6 +24,7 @@ function SubscriptionFactory:makeFeed(configuration)
          include_images = configuration.include_images,
          enabled_filter = configuration.enabled_filter,
          filter_element = configuration.filter_element,
+         content_source = configuration.content_source
       }
    end
 

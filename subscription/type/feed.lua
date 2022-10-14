@@ -1,3 +1,5 @@
+local util = require("frontend/util")
+
 local Subscription = require("subscription/subscription")
 local FeedFactory = require("feed/feedfactory")
 local socket_url = require("socket.url")
@@ -45,6 +47,7 @@ function Feed:_init(o)
    self.download_directory = o.download_directory
    self.include_images = o.enabled_filter -- not implemented
    self.filter_element = o.filter_element -- not implemented
+   self.content_source = o.content_source
    -- self.feed isn't initialized here. Instead, it's initialized in the
    -- SubscriptionFactory.
 end
@@ -195,7 +198,7 @@ function Feed:getDownloadDirectory()
 end
 
 function Feed:getContentSource()
-   return Feed.CONTENT_SOURCE[self.content_source] or Feed.CONTENT_SOURCE.CONTENT
+   return self.content_source or Feed.CONTENT_SOURCE.CONTENT
 end
 
 return Feed
